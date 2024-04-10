@@ -1,0 +1,216 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace GUI_Demo
+{
+    public partial class Form1 : Form
+    {
+        private List<TextBox> coefficientTextBoxes = new List<TextBox>();
+        private List<TextBox> constantTextBoxes = new List<TextBox>();
+
+        public Form1()
+        {
+            InitializeComponent();
+            this.KeyPreview = true;
+
+            // Додаємо обробник події KeyPress для textBoxDimension
+            DimensionInput.KeyPress += DimensionInput_KeyPress;
+            SolveBtn.Enabled = false;
+        }
+        private void DisplayEquations(int dimension)
+        {
+            // Очищаємо контейнер перед додаванням нових елементів
+            EquationsContainer.Controls.Clear();
+
+            const int textBoxWidth = 50;
+            const int textBoxSpacing = 5;
+            int yOffset = 30;
+
+            for(int i = 0; i < dimension; i++)
+            {
+                int x = 0;
+                for (int j = 0; j < dimension; j++)
+                {
+                    // Текстове поле для коефіцієнта невідомої
+                    TextBox coefficientTextBox = new TextBox();
+                    coefficientTextBox.Name = $"textBoxCoeff{i + 1}{j + 1}";
+                    coefficientTextBox.Width = textBoxWidth;
+                    coefficientTextBox.Location = new Point(x, yOffset*i);
+                    coefficientTextBox.TextChanged += TextBox_TextChanged;
+                    coefficientTextBoxes.Add(coefficientTextBox);
+                    EquationsContainer.Controls.Add(coefficientTextBox);
+                    x = coefficientTextBox.Right + textBoxSpacing;
+                }
+                // Назва невідомої (наприклад, x1, x2, ..., xn)
+                Label variableLabel = new Label();
+                variableLabel.Text = $"x{i + 1}";
+                variableLabel.AutoSize = true;
+                variableLabel.Location = new Point(x, yOffset*i);
+                EquationsContainer.Controls.Add(variableLabel);
+                x = variableLabel.Right + textBoxSpacing;
+                // Додавання знака "=" до контейнера
+                Label equalsLabel = new Label();
+                equalsLabel.Text = " = ";
+                equalsLabel.AutoSize = true;
+                equalsLabel.Location = new Point(x, yOffset * i);
+                EquationsContainer.Controls.Add(equalsLabel);
+                x = equalsLabel.Right + textBoxSpacing;
+
+                // Додавання текстового поля для введення вільного члена рівняння
+                TextBox constantTextBox = new TextBox();
+                constantTextBox.Name = $"textBoxConstant{i+1}";
+                constantTextBox.Width = textBoxWidth;
+                constantTextBox.Location = new Point(x, yOffset * i);
+                constantTextBox.TextChanged += TextBox_TextChanged;
+                constantTextBoxes.Add(constantTextBox);
+                EquationsContainer.Controls.Add(constantTextBox);
+            }
+           
+        }
+        private Equation ReadEquationsValues(int dimension)
+        {
+            Equation equations = new Equation();
+            equations.Coefficients = new double[dimension, dimension];
+            equations.Constants = new double[dimension];
+            for(int i = 0; i < dimension; i++)
+            {
+                for (int j = 0; j < dimension; j++)
+                {
+                    TextBox coefficientTextBox = (TextBox)EquationsContainer.Controls[$"textBoxCoeff{i + 1}{j + 1}"];
+                    if (coefficientTextBox != null && double.TryParse(coefficientTextBox.Text, out double coefficient))
+                    {
+                        equations.Coefficients[i, j] = coefficient;
+                    }
+                }
+
+                TextBox constantTextBox = (TextBox)EquationsContainer.Controls[$"textBoxConstant{i + 1}"];
+                if (constantTextBox != null && double.TryParse(constantTextBox.Text, out double constant))
+                {
+                    equations.Constants[i] = constant;
+                }
+            }
+            return equations;
+        }
+        private bool IsDimensionEntered()
+        {
+            int dimension;
+            if (int.TryParse(DimensionInput.Text, out dimension))
+            {
+                // Перевірити, чи розмірність є позитивним цілим числом
+                return dimension > 0 && dimension <= 10;
+            }
+            return false;
+        }
+        private bool IsMethodSelected()
+        {
+            return comboBoxMethods.SelectedIndex != -1;
+        }
+
+        private void UpdateSolveButtonState()
+        {
+            bool isDimensionEntered = IsDimensionEntered();
+            bool isMethodSelected = IsMethodSelected();
+            bool areCoefficientsEntered = true;
+            bool areConstantsEntered = true;
+
+            // Перевірка текстових полів для коефіцієнтів
+            foreach (TextBox textBox in coefficientTextBoxes)
+            {
+                if (string.IsNullOrEmpty(textBox.Text))
+                {
+                    areCoefficientsEntered = false;
+                    break;
+                }
+            }
+            // Перевірка текстових полів для вільних членів
+            foreach (TextBox textBox in constantTextBoxes)
+            {
+                if (string.IsNullOrEmpty(textBox.Text))
+                {
+                    areConstantsEntered = false;
+                    break;
+                }
+            }
+            // Оновлення стану кнопки "Розв'язати"
+            SolveBtn.Enabled = isDimensionEntered && isMethodSelected && areCoefficientsEntered && areConstantsEntered;
+        }
+
+        private void DimensionInput_KeyPress(object sender, KeyPressEventArgs e){
+            // Перевіряємо чи натиснута клавіша Enter
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                // Отримуємо розмірність системи з textBoxDimension
+                if (int.TryParse(DimensionInput.Text, out int dimension))
+                {
+                    if (dimension < 2 || dimension > 10)
+                    {
+                        MessageBox.Show("Розмірність системи повинна бути між 2 та 10", "Помилка введення", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    } else
+                    {
+                        // Відображаємо рівняння з відповідною кількістю невідомих
+                        DisplayEquations(dimension);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Будь ласка, введіть коректну розмірність системи.", "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+        private void SolveBtn_Click(object sender, EventArgs e)
+        {
+            int dimension = Convert.ToInt32(DimensionInput.Text);
+            Equation equations = ReadEquationsValues(dimension);
+            string selectedMethod = comboBoxMethods.SelectedItem.ToString();
+            if(selectedMethod == "Метод квадратного кореня")
+            {
+                double[] result = equations.CalculateSqrtMethod(equations.Coefficients, equations.Constants);
+                MessageBox.Show($"The result: {result[0]} {result[1]}");
+            }
+        }
+        private void DimensionInput_TextChanged(object sender, EventArgs e)
+        {
+            UpdateSolveButtonState(); // Оновити стан кнопки "Розв'язати"
+        }
+        private void TextBox_TextChanged(object sender, EventArgs e)
+        {
+            UpdateSolveButtonState(); // Оновити стан кнопки "Розв'язати"
+        }
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateSolveButtonState();
+        }
+
+        private void label3_Click_1(object sender, EventArgs e)
+        {
+
+        }
+    }
+}
