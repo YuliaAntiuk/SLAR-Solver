@@ -171,7 +171,7 @@ namespace GUI_Demo
             string selectedMethod = comboBoxMethods.SelectedItem.ToString();
             if(selectedMethod == "Метод квадратного кореня")
             {
-                double[] result = equations.CalculateSqrtMethod(equations.Coefficients, equations.Constants);
+                double[] result = equations.CalculateSqrtMethod(equations.Coefficients, dimension, equations.Constants);
                 MessageBox.Show($"The result: {result[0]} {result[1]}");
             }
         }

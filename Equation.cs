@@ -10,63 +10,79 @@ namespace GUI_Demo
     {
         public double[,] Coefficients { get; set; }
         public double[] Constants { get; set; }
-        public double[] CalculateSqrtMethod(double[,] coefficients, double[] constants)
+        private double[,] Transpose(double[,] matrix, int n)
         {
-            int n = constants.Length;  // Assuming constants.Length equals the size of the matrix
-            double[,] AMatrix = coefficients;
-            double[] BMatrix = constants;
-            double[,] L = new double[n, n]; // Lower triangular matrix L
-            double[] y = new double[n];     // Intermediate result vector y
-            double[] x = new double[n];     // Result vector x
-
-            // Perform Cholesky decomposition
+            double[,] transMatrix = new double[n, n];
             for (int i = 0; i < n; i++)
             {
-                for (int j = 0; j <= i; j++)
+                for (int j = 0; j < n; j++)
                 {
-                    double sum = 0;
+                    transMatrix[i, j] = matrix[j, i];
+                }
+            }
+            return transMatrix;
+        }
+        public double[] CalculateSqrtMethod(double[,] AMatrix, int n, double[] BMatrix)
+        {
+            double[,] S = new double[n, n];
+            double[] y = new double[n];
+            double[] x = new double[n];
 
-                    if (j == i)
+            // Calculate S matrix
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    if (i == j)
                     {
-                        // Diagonal elements
-                        for (int k = 0; k < j; k++)
+                        double sum = 0;
+                        for (int k = 0; k < i; k++)
                         {
-                            sum += L[j, k] * L[j, k];
+                            sum += S[i, k] * S[i, k];
                         }
-                        L[j, j] = Math.Sqrt(AMatrix[j, j] - sum);
+                        S[i, i] = Math.Sqrt(AMatrix[i, i] - sum);
                     }
-                    else
+                    else if (i > j)
                     {
-                        // Non-diagonal elements
+                        double sum = 0;
                         for (int k = 0; k < j; k++)
                         {
-                            sum += L[i, k] * L[j, k];
+                            sum += S[i, k] * S[j, k];
                         }
-                        L[i, j] = (AMatrix[i, j] - sum) / L[j, j];
+                        S[i, j] = (AMatrix[i, j] - sum) / S[j, j];
+                    }
+                    else // i < j
+                    {
+                        S[i, j] = 0;
                     }
                 }
             }
 
+            // Calculate transpose of S matrix
+            double[,] St = Transpose(S, n);
+
             // Solve Ly = B using forward substitution
-            for (int i = 0; i < n; i++)
+            y[0] = BMatrix[0] / S[0, 0];
+            for (int i = 1; i < n; i++)
             {
                 double sum = 0;
                 for (int j = 0; j < i; j++)
                 {
-                    sum += L[i, j] * y[j];
+                    sum += S[i, j] * y[j];
                 }
-                y[i] = (BMatrix[i] - sum) / L[i, i];
+                y[i] = (BMatrix[i] - sum) / S[i, i];
             }
 
-            // Solve L^T x = y using backward substitution
-            for (int i = n - 1; i >= 0; i--)
+            // Solve Ux = y using backward substitution
+            x[n - 1] = y[n - 1] / S[n - 1, n - 1];
+            for (int i = n - 2; i >= 0; i--)
             {
                 double sum = 0;
                 for (int j = i + 1; j < n; j++)
                 {
-                    sum += L[j, i] * x[j];
+                    sum += St[i, j] * x[j];
                 }
-                x[i] = (y[i] - sum) / L[i, i];
+                x[i] = (y[i] - sum) / S[i, i];
             }
 
             return x;

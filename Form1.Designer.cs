@@ -40,7 +40,7 @@
             // SolveBtn
             // 
             this.SolveBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.SolveBtn.Location = new System.Drawing.Point(399, 542);
+            this.SolveBtn.Location = new System.Drawing.Point(779, 8);
             this.SolveBtn.Name = "SolveBtn";
             this.SolveBtn.Size = new System.Drawing.Size(163, 34);
             this.SolveBtn.TabIndex = 0;
@@ -70,7 +70,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.label2.Location = new System.Drawing.Point(13, 50);
+            this.label2.Location = new System.Drawing.Point(13, 118);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(230, 25);
             this.label2.TabIndex = 3;
@@ -87,7 +87,7 @@
             "Метод обертання",
             "Метод квадратного кореня",
             "Графічний метод"});
-            this.comboBoxMethods.Location = new System.Drawing.Point(360, 476);
+            this.comboBoxMethods.Location = new System.Drawing.Point(324, 65);
             this.comboBoxMethods.Name = "comboBoxMethods";
             this.comboBoxMethods.Size = new System.Drawing.Size(268, 28);
             this.comboBoxMethods.TabIndex = 16;
@@ -98,7 +98,7 @@
             this.EquationsContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.EquationsContainer.Location = new System.Drawing.Point(18, 79);
+            this.EquationsContainer.Location = new System.Drawing.Point(18, 160);
             this.EquationsContainer.Name = "EquationsContainer";
             this.EquationsContainer.Size = new System.Drawing.Size(924, 368);
             this.EquationsContainer.TabIndex = 17;
@@ -107,7 +107,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.label3.Location = new System.Drawing.Point(13, 476);
+            this.label3.Location = new System.Drawing.Point(13, 64);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(271, 25);
             this.label3.TabIndex = 18;
@@ -120,13 +120,13 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(982, 753);
+            this.Controls.Add(this.SolveBtn);
+            this.Controls.Add(this.comboBoxMethods);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.EquationsContainer);
-            this.Controls.Add(this.comboBoxMethods);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.DimensionInput);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.SolveBtn);
             this.Name = "Form1";
             this.Text = "Розв\'язання СЛАР точними методами";
             this.ResumeLayout(false);
