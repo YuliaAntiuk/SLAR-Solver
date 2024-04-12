@@ -28,7 +28,6 @@ namespace GUI_Demo
         {
             // Очищаємо контейнер перед додаванням нових елементів
             EquationsContainer.Controls.Clear();
-
             const int textBoxWidth = 50;
             const int textBoxSpacing = 5;
             int yOffset = 30;
@@ -112,7 +111,6 @@ namespace GUI_Demo
         {
             return comboBoxMethods.SelectedIndex != -1;
         }
-
         private void UpdateSolveButtonState()
         {
             bool isDimensionEntered = IsDimensionEntered();
@@ -141,7 +139,6 @@ namespace GUI_Demo
             // Оновлення стану кнопки "Розв'язати"
             SolveBtn.Enabled = isDimensionEntered && isMethodSelected && areCoefficientsEntered && areConstantsEntered;
         }
-
         private void DimensionInput_KeyPress(object sender, KeyPressEventArgs e){
             // Перевіряємо чи натиснута клавіша Enter
             if (e.KeyChar == (char)Keys.Enter)
@@ -172,9 +169,27 @@ namespace GUI_Demo
             if(selectedMethod == "Метод квадратного кореня")
             {
                 double[] result = equations.CalculateSqrtMethod(equations.Coefficients, dimension, equations.Constants);
-                MessageBox.Show($"The result: {result[0]} {result[1]}");
+                OutputResults(result);
             }
         }
+        private void OutputResults(double[] result)
+        {
+            int y = EquationsContainer.Bottom + 15; 
+
+            // Loop through each result and create a label for it
+            for (int i = 0; i < result.Length; i++)
+            {
+                Label resultLabel = new Label();
+                resultLabel.Text = $"x{i + 1} = {result[i]}";
+                resultLabel.AutoSize = true;
+                resultLabel.Font = new Font("Microsoft Sans Serif", 12f, FontStyle.Regular);
+                // Adjust the vertical position based on label height and index
+                resultLabel.Location = new Point(0, y);
+                this.Controls.Add(resultLabel);
+                y += 30;
+            }
+        }
+
         private void DimensionInput_TextChanged(object sender, EventArgs e)
         {
             UpdateSolveButtonState(); // Оновити стан кнопки "Розв'язати"
