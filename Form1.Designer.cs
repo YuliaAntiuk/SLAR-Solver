@@ -33,8 +33,8 @@
             this.DimensionInput = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.comboBoxMethods = new System.Windows.Forms.ComboBox();
-            this.EquationsContainer = new System.Windows.Forms.Panel();
             this.label3 = new System.Windows.Forms.Label();
+            this.EquationsContainer = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
             // SolveBtn
@@ -93,16 +93,6 @@
             this.comboBoxMethods.TabIndex = 16;
             this.comboBoxMethods.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
-            // EquationsContainer
-            // 
-            this.EquationsContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.EquationsContainer.Location = new System.Drawing.Point(18, 160);
-            this.EquationsContainer.Name = "EquationsContainer";
-            this.EquationsContainer.Size = new System.Drawing.Size(924, 368);
-            this.EquationsContainer.TabIndex = 17;
-            // 
             // label3
             // 
             this.label3.AutoSize = true;
@@ -113,6 +103,16 @@
             this.label3.TabIndex = 18;
             this.label3.Text = "Оберіть метод розв\'язання";
             this.label3.Click += new System.EventHandler(this.label3_Click_1);
+            // 
+            // EquationsContainer
+            // 
+            this.EquationsContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.EquationsContainer.Location = new System.Drawing.Point(18, 160);
+            this.EquationsContainer.Name = "EquationsContainer";
+            this.EquationsContainer.Size = new System.Drawing.Size(924, 368);
+            this.EquationsContainer.TabIndex = 17;
             // 
             // Form1
             // 
@@ -141,8 +141,8 @@
         private System.Windows.Forms.TextBox DimensionInput;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox comboBoxMethods;
-        private System.Windows.Forms.Panel EquationsContainer;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Panel EquationsContainer;
     }
 }
 

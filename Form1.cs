@@ -32,7 +32,7 @@ namespace GUI_Demo
             const int textBoxSpacing = 5;
             int yOffset = 30;
 
-            for(int i = 0; i < dimension; i++)
+            for (int i = 0; i < dimension; i++)
             {
                 int x = 0;
                 for (int j = 0; j < dimension; j++)
@@ -41,7 +41,7 @@ namespace GUI_Demo
                     TextBox coefficientTextBox = new TextBox();
                     coefficientTextBox.Name = $"textBoxCoeff{i + 1}{j + 1}";
                     coefficientTextBox.Width = textBoxWidth;
-                    coefficientTextBox.Location = new Point(x, yOffset*i);
+                    coefficientTextBox.Location = new Point(x, yOffset * i);
                     coefficientTextBox.TextChanged += TextBox_TextChanged;
                     coefficientTextBoxes.Add(coefficientTextBox);
                     EquationsContainer.Controls.Add(coefficientTextBox);
@@ -51,7 +51,7 @@ namespace GUI_Demo
                 Label variableLabel = new Label();
                 variableLabel.Text = $"x{i + 1}";
                 variableLabel.AutoSize = true;
-                variableLabel.Location = new Point(x, yOffset*i);
+                variableLabel.Location = new Point(x, yOffset * i);
                 EquationsContainer.Controls.Add(variableLabel);
                 x = variableLabel.Right + textBoxSpacing;
                 // Додавання знака "=" до контейнера
@@ -64,14 +64,14 @@ namespace GUI_Demo
 
                 // Додавання текстового поля для введення вільного члена рівняння
                 TextBox constantTextBox = new TextBox();
-                constantTextBox.Name = $"textBoxConstant{i+1}";
+                constantTextBox.Name = $"textBoxConstant{i + 1}";
                 constantTextBox.Width = textBoxWidth;
                 constantTextBox.Location = new Point(x, yOffset * i);
                 constantTextBox.TextChanged += TextBox_TextChanged;
                 constantTextBoxes.Add(constantTextBox);
                 EquationsContainer.Controls.Add(constantTextBox);
             }
-           
+            EquationsContainer.Height = yOffset * dimension;
         }
         private Equation ReadEquationsValues(int dimension)
         {
@@ -182,14 +182,14 @@ namespace GUI_Demo
                 Label resultLabel = new Label();
                 resultLabel.Text = $"x{i + 1} = {result[i]}";
                 resultLabel.AutoSize = true;
-                resultLabel.Font = new Font("Microsoft Sans Serif", 12f, FontStyle.Regular);
+                resultLabel.Font = new Font("Microsoft Sans Serif", 10f, FontStyle.Regular);
                 // Adjust the vertical position based on label height and index
-                resultLabel.Location = new Point(0, y);
+                resultLabel.Location = new Point(18, y);
                 this.Controls.Add(resultLabel);
                 y += 30;
             }
+            SolveBtn.Enabled = false;
         }
-
         private void DimensionInput_TextChanged(object sender, EventArgs e)
         {
             UpdateSolveButtonState(); // Оновити стан кнопки "Розв'язати"
