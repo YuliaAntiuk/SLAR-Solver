@@ -159,6 +159,10 @@ namespace GUI_Demo
                 {
                     MessageBox.Show("Будь ласка, введіть коректну розмірність системи.", "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+                if (dimension == 2)
+                {
+                    comboBoxMethods.Items.Add("Графічний метод");
+                }
             }
         }
         private void SolveBtn_Click(object sender, EventArgs e)

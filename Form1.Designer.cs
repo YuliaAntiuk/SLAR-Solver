@@ -85,8 +85,7 @@
             this.comboBoxMethods.Items.AddRange(new object[] {
             "LUP-метод",
             "Метод обертання",
-            "Метод квадратного кореня",
-            "Графічний метод"});
+            "Метод квадратного кореня"});
             this.comboBoxMethods.Location = new System.Drawing.Point(324, 65);
             this.comboBoxMethods.Name = "comboBoxMethods";
             this.comboBoxMethods.Size = new System.Drawing.Size(268, 28);
