@@ -165,34 +165,54 @@ namespace GUI_Demo
                 }
             }
         }
+        private void Create_Btn_Clear(int x, int y)
+        {
+            Button clearBtn = new Button();
+
+            clearBtn.Text = "Очистити";
+            clearBtn.Location = new System.Drawing.Point(x, y);
+            clearBtn.Size = new System.Drawing.Size(100, 40);
+
+            clearBtn.Click += new EventHandler(clearBtn_Click);
+
+            this.Controls.Add(clearBtn);
+        }
         private void SolveBtn_Click(object sender, EventArgs e)
         {
             int dimension = Convert.ToInt32(DimensionInput.Text);
             Equation equations = ReadEquationsValues(dimension);
             string selectedMethod = comboBoxMethods.SelectedItem.ToString();
+            double[] result = new double[dimension];
             if(selectedMethod == "Метод квадратного кореня")
             {
-                double[] result = equations.CalculateSqrtMethod(equations.Coefficients, dimension, equations.Constants);
-                OutputResults(result);
+                result = equations.CalculateSqrtMethod(equations.Coefficients, dimension, equations.Constants);
             }
+            OutputResults(result);
         }
         private void OutputResults(double[] result)
         {
-            int y = EquationsContainer.Bottom + 15; 
-
-            // Loop through each result and create a label for it
+            int panelY = EquationsContainer.Bottom + 15;
+            Panel resultPanel = new Panel();
+            resultPanel.Height = 30 * result.Length;
+            resultPanel.Name = "resultPanel";
+            resultPanel.Location = new System.Drawing.Point(18, panelY);
+            this.Controls.Add(resultPanel);
+            int labelY = 0;
             for (int i = 0; i < result.Length; i++)
             {
                 Label resultLabel = new Label();
                 resultLabel.Text = $"x{i + 1} = {result[i]}";
                 resultLabel.AutoSize = true;
                 resultLabel.Font = new Font("Microsoft Sans Serif", 10f, FontStyle.Regular);
-                // Adjust the vertical position based on label height and index
-                resultLabel.Location = new Point(18, y);
-                this.Controls.Add(resultLabel);
-                y += 30;
+
+                resultLabel.Location = new Point(0, labelY);
+                resultPanel.Controls.Add(resultLabel); 
+
+                labelY += 30; 
             }
             SolveBtn.Enabled = false;
+            int clearBtnY = resultPanel.Bottom + 15;
+            Create_Btn_Clear(18, clearBtnY);
         }
         private void DimensionInput_TextChanged(object sender, EventArgs e)
         {
@@ -206,7 +226,10 @@ namespace GUI_Demo
         {
 
         }
+        private void clearBtn_Click(object sender, EventArgs e)
+        {
 
+        }
         private void label2_Click(object sender, EventArgs e)
         {
 
