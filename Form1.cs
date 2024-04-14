@@ -14,13 +14,11 @@ namespace GUI_Demo
     {
         private List<TextBox> coefficientTextBoxes = new List<TextBox>();
         private List<TextBox> constantTextBoxes = new List<TextBox>();
-
         public Form1()
         {
             InitializeComponent();
             this.KeyPreview = true;
 
-            // Додаємо обробник події KeyPress для textBoxDimension
             DimensionInput.KeyPress += DimensionInput_KeyPress;
             SolveBtn.Enabled = false;
         }
@@ -139,7 +137,8 @@ namespace GUI_Demo
             // Оновлення стану кнопки "Розв'язати"
             SolveBtn.Enabled = isDimensionEntered && isMethodSelected && areCoefficientsEntered && areConstantsEntered;
         }
-        private void DimensionInput_KeyPress(object sender, KeyPressEventArgs e){
+        private void DimensionInput_KeyPress(object sender, KeyPressEventArgs e)
+        {
             // Перевіряємо чи натиснута клавіша Enter
             if (e.KeyChar == (char)Keys.Enter)
             {
@@ -162,6 +161,9 @@ namespace GUI_Demo
                 if (dimension == 2)
                 {
                     comboBoxMethods.Items.Add("Графічний метод");
+                } else
+                {
+                    comboBoxMethods.Items.Remove("Графічний метод");
                 }
             }
         }
@@ -171,9 +173,10 @@ namespace GUI_Demo
 
             clearBtn.Text = "Очистити";
             clearBtn.Location = new System.Drawing.Point(x, y);
-            clearBtn.Size = new System.Drawing.Size(100, 40);
-
+            clearBtn.Size = new System.Drawing.Size(150, 30);
+            clearBtn.Font = new Font("Microsoft Sans Serif", 11f, FontStyle.Regular); 
             clearBtn.Click += new EventHandler(clearBtn_Click);
+            clearBtn.Name = "clearBtn";
 
             this.Controls.Add(clearBtn);
         }
@@ -228,28 +231,29 @@ namespace GUI_Demo
         }
         private void clearBtn_Click(object sender, EventArgs e)
         {
-
+            Controls.RemoveByKey("resultPanel");  
+            EquationsContainer.Controls.Clear();  
+            EquationsContainer.Height = 0;
+            Controls.RemoveByKey("clearBtn");
+            DimensionInput.Text = "";
+            comboBoxMethods.SelectedItem = null;
         }
         private void label2_Click(object sender, EventArgs e)
         {
 
         }
-
         private void textBox2_TextChanged(object sender, EventArgs e)
         {
 
         }
-
         private void label3_Click(object sender, EventArgs e)
         {
 
         }
-
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateSolveButtonState();
         }
-
         private void label3_Click_1(object sender, EventArgs e)
         {
 
