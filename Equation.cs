@@ -29,7 +29,6 @@ namespace GUI_Demo
             double[] y = new double[n];
             double[] x = new double[n];
 
-            // Calculate S matrix
             for (int i = 0; i < n; i++)
             {
                 for (int j = 0; j < n; j++)
@@ -52,17 +51,15 @@ namespace GUI_Demo
                         }
                         S[i, j] = (AMatrix[i, j] - sum) / S[j, j];
                     }
-                    else // i < j
+                    else 
                     {
                         S[i, j] = 0;
                     }
                 }
             }
 
-            // Calculate transpose of S matrix
             double[,] St = Transpose(S, n);
 
-            // Solve Ly = B using forward substitution
             y[0] = BMatrix[0] / S[0, 0];
             for (int i = 1; i < n; i++)
             {
@@ -74,7 +71,6 @@ namespace GUI_Demo
                 y[i] = (BMatrix[i] - sum) / S[i, i];
             }
 
-            // Solve Ux = y using backward substitution
             x[n - 1] = y[n - 1] / S[n - 1, n - 1];
             for (int i = n - 2; i >= 0; i--)
             {
@@ -123,6 +119,93 @@ namespace GUI_Demo
                     sum += AMatrix[i, j] * x[j];
                 }
                 x[i] = (BMatrix[i] - sum) / AMatrix[i, i];
+            }
+
+            return x;
+        }
+        public double[] CalculateLUPMethod(double[,] AMatrix, int n, double[] BMatrix)
+        {
+            double[,] L = new double[n, n];
+            double[,] U = new double[n, n];
+            int[] P = new int[n];
+
+            for (int i = 0; i < n; i++)
+            {
+                P[i] = i;
+            }
+
+            Array.Copy(AMatrix, U, AMatrix.Length);
+            for (int i = 0; i < n; i++)
+            {
+                L[i, i] = 1.0;
+            }
+
+            for (int k = 0; k < n - 1; k++)
+            {
+                int pivotRow = k;
+                double pivotValue = Math.Abs(U[k, k]);
+
+                for (int i = k + 1; i < n; i++)
+                {
+                    if (Math.Abs(U[i, k]) > pivotValue)
+                    {
+                        pivotRow = i;
+                        pivotValue = Math.Abs(U[i, k]);
+                    }
+                }
+
+                if (pivotRow != k)
+                {
+                    double temp;
+                    for (int j = 0; j < n; j++)
+                    {
+                        temp = U[k, j];
+                        U[k, j] = U[pivotRow, j];
+                        U[pivotRow, j] = temp;
+                    }
+
+                    int tempIndex = P[k];
+                    P[k] = P[pivotRow];
+                    P[pivotRow] = tempIndex;
+
+                    for (int j = 0; j < k; j++)
+                    {
+                        temp = L[k, j];
+                        L[k, j] = L[pivotRow, j];
+                        L[pivotRow, j] = temp;
+                    }
+                }
+
+                for (int i = k + 1; i < n; i++)
+                {
+                    double factor = U[i, k] / U[k, k];
+                    L[i, k] = factor;
+                    for (int j = k; j < n; j++)
+                    {
+                        U[i, j] -= factor * U[k, j];
+                    }
+                }
+            }
+
+            double[] y = new double[n];
+            for (int i = 0; i < n; i++)
+            {
+                y[i] = BMatrix[P[i]];
+                for (int j = 0; j < i; j++)
+                {
+                    y[i] -= L[i, j] * y[j];
+                }
+            }
+
+            double[] x = new double[n];
+            for (int i = n - 1; i >= 0; i--)
+            {
+                x[i] = y[i];
+                for (int j = i + 1; j < n; j++)
+                {
+                    x[i] -= U[i, j] * x[j];
+                }
+                x[i] /= U[i, i];
             }
 
             return x;

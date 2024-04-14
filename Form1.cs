@@ -194,6 +194,9 @@ namespace GUI_Demo
                 case "Метод обертання":
                     result = equations.CalculateRotationMethod(equations.Coefficients, dimension, equations.Constants);
                     break;
+                case "LUP-метод":
+                    result = equations.CalculateLUPMethod(equations.Coefficients, dimension, equations.Constants);
+                    break;
             }
             OutputResults(result);
         }
