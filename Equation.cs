@@ -88,5 +88,44 @@ namespace GUI_Demo
 
             return x;
         }
+        public double[] CalculateRotationMethod(double[,] AMatrix, int n, double[] BMatrix)
+        {
+            double[] x = new double[n];
+
+            for (int i = 0; i < n - 1; i++)
+            {
+                for (int k = i + 1; k < n; k++)
+                {
+                    double r = Math.Sqrt(AMatrix[i, i] * AMatrix[i, i] + AMatrix[k, i] * AMatrix[k, i]);
+                    double c = AMatrix[i, i] / r;
+                    double s = -AMatrix[k, i] / r;
+
+                    for (int j = 0; j < n; j++)
+                    {
+                        double tempA1 = AMatrix[i, j];
+                        double tempA2 = AMatrix[k, j];
+                        AMatrix[i, j] = c * tempA1 - s * tempA2;
+                        AMatrix[k, j] = s * tempA1 + c * tempA2;
+                    }
+
+                    double tempB1 = BMatrix[i];
+                    double tempB2 = BMatrix[k];
+                    BMatrix[i] = c * tempB1 - s * tempB2;
+                    BMatrix[k] = s * tempB1 + c * tempB2;
+                }
+            }
+
+            for (int i = n - 1; i >= 0; i--)
+            {
+                double sum = 0;
+                for (int j = i + 1; j < n; j++)
+                {
+                    sum += AMatrix[i, j] * x[j];
+                }
+                x[i] = (BMatrix[i] - sum) / AMatrix[i, i];
+            }
+
+            return x;
+        }
     }
 }

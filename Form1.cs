@@ -186,9 +186,14 @@ namespace GUI_Demo
             Equation equations = ReadEquationsValues(dimension);
             string selectedMethod = comboBoxMethods.SelectedItem.ToString();
             double[] result = new double[dimension];
-            if(selectedMethod == "Метод квадратного кореня")
+            switch (selectedMethod)
             {
-                result = equations.CalculateSqrtMethod(equations.Coefficients, dimension, equations.Constants);
+                case "Метод квадратного кореня":
+                    result = equations.CalculateSqrtMethod(equations.Coefficients, dimension, equations.Constants);
+                    break;
+                case "Метод обертання":
+                    result = equations.CalculateRotationMethod(equations.Coefficients, dimension, equations.Constants);
+                    break;
             }
             OutputResults(result);
         }
@@ -237,6 +242,7 @@ namespace GUI_Demo
             Controls.RemoveByKey("clearBtn");
             DimensionInput.Text = "";
             comboBoxMethods.SelectedItem = null;
+            comboBoxMethods.Items.Remove("Графічний метод");
         }
         private void label2_Click(object sender, EventArgs e)
         {
