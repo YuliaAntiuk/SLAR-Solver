@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace GUI_Demo
 {
@@ -21,6 +23,7 @@ namespace GUI_Demo
 
             DimensionInput.KeyPress += DimensionInput_KeyPress;
             SolveBtn.Enabled = false;
+            this.AutoScroll = true;
         }
         private void DisplayEquations(int dimension)
         {
@@ -174,9 +177,22 @@ namespace GUI_Demo
             clearBtn.Text = "Очистити";
             clearBtn.Location = new System.Drawing.Point(x, y);
             clearBtn.Size = new System.Drawing.Size(150, 30);
-            clearBtn.Font = new Font("Microsoft Sans Serif", 11f, FontStyle.Regular); 
+            clearBtn.Font = new Font("Microsoft Sans Serif", 11f, FontStyle.Regular);
             clearBtn.Click += new EventHandler(clearBtn_Click);
             clearBtn.Name = "clearBtn";
+
+            this.Controls.Add(clearBtn);
+        }
+        private void Create_Btn_ChangeMethod(int x, int y)
+        {
+            Button clearBtn = new Button();
+
+            clearBtn.Text = "Змінити метод розв'язання";
+            clearBtn.Location = new System.Drawing.Point(x, y);
+            clearBtn.Size = new System.Drawing.Size(150, 30);
+            clearBtn.Font = new Font("Microsoft Sans Serif", 11f, FontStyle.Regular);
+            clearBtn.Click += new EventHandler(changeBtn_Click);
+            clearBtn.Name = "changeBtn";
 
             this.Controls.Add(clearBtn);
         }
@@ -196,6 +212,10 @@ namespace GUI_Demo
                     break;
                 case "LUP-метод":
                     result = equations.CalculateLUPMethod(equations.Coefficients, dimension, equations.Constants);
+                    break;
+                case "Графічний метод":
+                    break;
+                default:
                     break;
             }
             OutputResults(result);
@@ -223,7 +243,41 @@ namespace GUI_Demo
             }
             SolveBtn.Enabled = false;
             int clearBtnY = resultPanel.Bottom + 15;
+            DisableInputs();
             Create_Btn_Clear(18, clearBtnY);
+            Create_Btn_ChangeMethod(200, clearBtnY);
+        }
+        private void changeBtn_Click(object sender, EventArgs e)
+        {
+            comboBoxMethods.Enabled = true;
+            Controls.RemoveByKey("resultPanel");
+            Controls.RemoveByKey("clearBtn");
+            Controls.RemoveByKey("changeBtn");
+            SolveBtn.Enabled = true;
+        }
+        private void DisableInputs()
+        {
+            DimensionInput.Enabled = false;
+            comboBoxMethods.Enabled = false;
+            foreach (Control control in EquationsContainer.Controls)
+            {
+                if (control is TextBox textBox)
+                {
+                    textBox.Enabled = false;
+                }
+            }
+        }
+        private void EnableInputs()
+        {
+            DimensionInput.Enabled = true;
+            comboBoxMethods.Enabled = true;
+            foreach (Control control in EquationsContainer.Controls)
+            {
+                if (control is TextBox textBox)
+                {
+                    textBox.Enabled = true;
+                }
+            }
         }
         private void DimensionInput_TextChanged(object sender, EventArgs e)
         {
@@ -232,6 +286,10 @@ namespace GUI_Demo
         private void TextBox_TextChanged(object sender, EventArgs e)
         {
             UpdateSolveButtonState(); // Оновити стан кнопки "Розв'язати"
+        }
+        private void TextBox_Validating(object sender, CancelEventArgs e)
+        {
+
         }
         private void label1_Click(object sender, EventArgs e)
         {
@@ -243,9 +301,11 @@ namespace GUI_Demo
             EquationsContainer.Controls.Clear();  
             EquationsContainer.Height = 0;
             Controls.RemoveByKey("clearBtn");
+            Controls.RemoveByKey("changeBtn");
             DimensionInput.Text = "";
             comboBoxMethods.SelectedItem = null;
             comboBoxMethods.Items.Remove("Графічний метод");
+            EnableInputs();
         }
         private void label2_Click(object sender, EventArgs e)
         {
