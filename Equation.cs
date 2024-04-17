@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +23,24 @@ namespace GUI_Demo
             Constants = constants;
             Size = size;
         }
+        private double[,] CalculateMinor(double[,] matrix, int index)
+        {
+            int n = matrix.GetLength(0);
+            double[,] minor = new double[n - 1, n - 1];
+
+            for (int i = 1; i < n; i++)
+            {
+                for (int j = 0, k = 0; j < n; j++)
+                {
+                    if (j == index)
+                        continue;
+
+                    minor[i - 1, k++] = matrix[i, j];
+                }
+            }
+
+            return minor;
+        }
         private double[,] Transpose(double[,] matrix, int n)
         {
             double[,] transMatrix = new double[n, n];
@@ -32,6 +52,20 @@ namespace GUI_Demo
                 }
             }
             return transMatrix;
+        }
+        public double CalculateDeterminant(double[,] matrix)
+        {
+            int n = matrix.GetLength(0);
+            double determinant = 0;
+            int sign = 1;
+            for (int i = 0; i < n; i++)
+            {
+                double[,] minorMatrix = CalculateMinor(matrix, i);
+                double minorDeterminant = CalculateDeterminant(minorMatrix);
+                determinant += sign * matrix[0, i] * minorDeterminant;
+                sign = -sign;
+            }
+            return determinant;
         }
         public double[] CalculateSqrtMethod()
         {
