@@ -76,9 +76,8 @@ namespace GUI_Demo
         }
         private Equation ReadEquationsValues(int dimension)
         {
-            Equation equations = new Equation();
-            equations.Coefficients = new double[dimension, dimension];
-            equations.Constants = new double[dimension];
+            double[,] coefficients = new double[dimension, dimension];
+            double[] constants = new double[dimension];
             for(int i = 0; i < dimension; i++)
             {
                 for (int j = 0; j < dimension; j++)
@@ -86,16 +85,17 @@ namespace GUI_Demo
                     TextBox coefficientTextBox = (TextBox)EquationsContainer.Controls[$"textBoxCoeff{i + 1}{j + 1}"];
                     if (coefficientTextBox != null && double.TryParse(coefficientTextBox.Text, out double coefficient))
                     {
-                        equations.Coefficients[i, j] = coefficient;
+                        coefficients[i, j] = coefficient;
                     }
                 }
 
                 TextBox constantTextBox = (TextBox)EquationsContainer.Controls[$"textBoxConstant{i + 1}"];
                 if (constantTextBox != null && double.TryParse(constantTextBox.Text, out double constant))
                 {
-                    equations.Constants[i] = constant;
+                    constants[i] = constant;
                 }
             }
+            Equation equations = new Equation(coefficients, constants, dimension);
             return equations;
         }
         private bool IsDimensionEntered()
@@ -196,56 +196,6 @@ namespace GUI_Demo
 
             this.Controls.Add(clearBtn);
         }
-        private double[] SolveGraphical(double[,] AMatrix, double[] BMatrix)
-        {
-            List<double> result = new List<double>();
-
-            Form graphicalForm = new Form();
-            graphicalForm.Text = "Графік рівнянь";
-            graphicalForm.Size = new System.Drawing.Size(600, 400);
-
-            Chart chart = new Chart();
-            chart.Parent = graphicalForm;
-            chart.Dock = DockStyle.Fill;
-            chart.ChartAreas.Add(new ChartArea("Equations plot"));
-            chart.ChartAreas[0].AxisX.Minimum = -10;  
-            chart.ChartAreas[0].AxisX.Maximum = 10;
-            chart.ChartAreas[0].AxisY.Minimum = -10;
-            chart.ChartAreas[0].AxisY.Maximum = 10;
-
-            Series series1 = new Series();
-            series1.ChartType = SeriesChartType.Line;
-            series1.Color = Color.Blue;
-            series1.BorderWidth = 3;
-
-            Series series2 = new Series();
-            series2.ChartType = SeriesChartType.Line;
-            series2.Color = Color.Red;
-            series2.BorderWidth = 3;
-
-            for (double x = -10; x <= 10; x += 0.1)
-            {
-                double y1 = (BMatrix[0] - AMatrix[0, 0] * x) / AMatrix[0, 1];
-                series1.Points.AddXY(x, y1);
-
-                double y2 = (BMatrix[1] - AMatrix[1, 0] * x) / AMatrix[1, 1];
-                series2.Points.AddXY(x, y2);
-
-                if (Math.Abs(y1 - y2) < 1e-6)
-                {
-                    result.Add(x);
-                    result.Add(y1);
-                }
-            }
-
-            chart.Series.Add(series1);
-            chart.Series.Add(series2);
-
-            graphicalForm.ShowDialog(); // Показати форму з графіками
-
-            return result.ToArray();
-        }
-
         private void SolveBtn_Click(object sender, EventArgs e)
         {
             int dimension = Convert.ToInt32(DimensionInput.Text);
@@ -255,16 +205,16 @@ namespace GUI_Demo
             switch (selectedMethod)
             {
                 case "Метод квадратного кореня":
-                    result = equations.CalculateSqrtMethod(equations.Coefficients, dimension, equations.Constants);
+                    result = equations.CalculateSqrtMethod();
                     break;
                 case "Метод обертання":
-                    result = equations.CalculateRotationMethod(equations.Coefficients, dimension, equations.Constants);
+                    result = equations.CalculateRotationMethod();
                     break;
                 case "LUP-метод":
-                    result = equations.CalculateLUPMethod(equations.Coefficients, dimension, equations.Constants);
+                    result = equations.CalculateLUPMethod();
                     break;
                 case "Графічний метод":
-                    result = SolveGraphical(equations.Coefficients, equations.Constants);
+                    result = equations.SolveGraphical();
                     break;
                 default:
                     break;

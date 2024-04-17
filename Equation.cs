@@ -6,6 +6,7 @@ using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace GUI_Demo
 {
@@ -13,27 +14,34 @@ namespace GUI_Demo
     {
         public double[,] Coefficients { get; set; }
         public double[] Constants { get; set; }
-        private double[,] Transpose(double[,] matrix, int n)
+        int Size {  get; set; }
+        public Equation(double[,] coefficients, double[] constants, int size)
         {
-            double[,] transMatrix = new double[n, n];
-            for (int i = 0; i < n; i++)
+            Coefficients = coefficients;
+            Constants = constants;
+            Size = size;
+        }
+        private double[,] TransposeCoefficients()
+        {
+            double[,] transMatrix = new double[Size, Size];
+            for (int i = 0; i < Size; i++)
             {
-                for (int j = 0; j < n; j++)
+                for (int j = 0; j < Size; j++)
                 {
-                    transMatrix[i, j] = matrix[j, i];
+                    transMatrix[i, j] = Coefficients[j, i];
                 }
             }
             return transMatrix;
         }
-        public double[] CalculateSqrtMethod(double[,] AMatrix, int n, double[] BMatrix)
+        public double[] CalculateSqrtMethod()
         {
-            double[,] S = new double[n, n];
-            double[] y = new double[n];
-            double[] x = new double[n];
+            double[,] S = new double[Size, Size];
+            double[] y = new double[Size];
+            double[] x = new double[Size];
 
-            for (int i = 0; i < n; i++)
+            for (int i = 0; i < Size; i++)
             {
-                for (int j = 0; j < n; j++)
+                for (int j = 0; j < Size; j++)
                 {
                     if (i == j)
                     {
@@ -42,7 +50,7 @@ namespace GUI_Demo
                         {
                             sum += S[i, k] * S[i, k];
                         }
-                        S[i, i] = Math.Sqrt(AMatrix[i, i] - sum);
+                        S[i, i] = Math.Sqrt(Coefficients[i, i] - sum);
                     }
                     else if (i > j)
                     {
@@ -51,7 +59,7 @@ namespace GUI_Demo
                         {
                             sum += S[i, k] * S[j, k];
                         }
-                        S[i, j] = (AMatrix[i, j] - sum) / S[j, j];
+                        S[i, j] = (Coefficients[i, j] - sum) / S[j, j];
                     }
                     else 
                     {
@@ -60,24 +68,24 @@ namespace GUI_Demo
                 }
             }
 
-            double[,] St = Transpose(S, n);
+            double[,] St = TransposeCoefficients();
 
-            y[0] = BMatrix[0] / S[0, 0];
-            for (int i = 1; i < n; i++)
+            y[0] = Constants[0] / S[0, 0];
+            for (int i = 1; i < Size; i++)
             {
                 double sum = 0;
                 for (int j = 0; j < i; j++)
                 {
                     sum += S[i, j] * y[j];
                 }
-                y[i] = (BMatrix[i] - sum) / S[i, i];
+                y[i] = (Constants[i] - sum) / S[i, i];
             }
 
-            x[n - 1] = y[n - 1] / S[n - 1, n - 1];
-            for (int i = n - 2; i >= 0; i--)
+            x[Size - 1] = y[Size - 1] / S[Size - 1, Size - 1];
+            for (int i = Size - 2; i >= 0; i--)
             {
                 double sum = 0;
-                for (int j = i + 1; j < n; j++)
+                for (int j = i + 1; j < Size; j++)
                 {
                     sum += St[i, j] * x[j];
                 }
@@ -86,68 +94,68 @@ namespace GUI_Demo
 
             return x;
         }
-        public double[] CalculateRotationMethod(double[,] AMatrix, int n, double[] BMatrix)
+        public double[] CalculateRotationMethod()
         {
-            double[] x = new double[n];
+            double[] x = new double[Size];
 
-            for (int i = 0; i < n - 1; i++)
+            for (int i = 0; i < Size - 1; i++)
             {
-                for (int k = i + 1; k < n; k++)
+                for (int k = i + 1; k < Size; k++)
                 {
-                    double r = Math.Sqrt(AMatrix[i, i] * AMatrix[i, i] + AMatrix[k, i] * AMatrix[k, i]);
-                    double c = AMatrix[i, i] / r;
-                    double s = -AMatrix[k, i] / r;
+                    double r = Math.Sqrt(Coefficients[i, i] * Coefficients[i, i] + Coefficients[k, i] * Coefficients[k, i] * Coefficients[k, i]);
+                    double c = Coefficients[i, i] / r;
+                    double s = -Coefficients[k, i] / r;
 
-                    for (int j = 0; j < n; j++)
+                    for (int j = 0; j < Size; j++)
                     {
-                        double tempA1 = AMatrix[i, j];
-                        double tempA2 = AMatrix[k, j];
-                        AMatrix[i, j] = c * tempA1 - s * tempA2;
-                        AMatrix[k, j] = s * tempA1 + c * tempA2;
+                        double tempA1 = Coefficients[i, j];
+                        double tempA2 = Coefficients[k, j];
+                        Coefficients[i, j] = c * tempA1 - s * tempA2;
+                        Coefficients[k, j] = s * tempA1 + c * tempA2;
                     }
 
-                    double tempB1 = BMatrix[i];
-                    double tempB2 = BMatrix[k];
-                    BMatrix[i] = c * tempB1 - s * tempB2;
-                    BMatrix[k] = s * tempB1 + c * tempB2;
+                    double tempB1 = Constants[i];
+                    double tempB2 = Constants[k];
+                    Constants[i] = c * tempB1 - s * tempB2;
+                    Constants[k] = s * tempB1 + c * tempB2;
                 }
             }
 
-            for (int i = n - 1; i >= 0; i--)
+            for (int i = Size - 1; i >= 0; i--)
             {
                 double sum = 0;
-                for (int j = i + 1; j < n; j++)
+                for (int j = i + 1; j < Size; j++)
                 {
-                    sum += AMatrix[i, j] * x[j];
+                    sum += Coefficients[i, j] * x[j];
                 }
-                x[i] = (BMatrix[i] - sum) / AMatrix[i, i];
+                x[i] = (Constants[i] - sum) / Coefficients[i, i];
             }
 
             return x;
         }
-        public double[] CalculateLUPMethod(double[,] AMatrix, int n, double[] BMatrix)
+        public double[] CalculateLUPMethod()
         {
-            double[,] L = new double[n, n];
-            double[,] U = new double[n, n];
-            int[] P = new int[n];
+            double[,] L = new double[Size, Size];
+            double[,] U = new double[Size, Size];
+            int[] P = new int[Size];
 
-            for (int i = 0; i < n; i++)
+            for (int i = 0; i < Size; i++)
             {
                 P[i] = i;
             }
 
-            Array.Copy(AMatrix, U, AMatrix.Length);
-            for (int i = 0; i < n; i++)
+            Array.Copy(Coefficients, U, Coefficients.Length);
+            for (int i = 0; i < Size; i++)
             {
                 L[i, i] = 1.0;
             }
 
-            for (int k = 0; k < n - 1; k++)
+            for (int k = 0; k < Size - 1; k++)
             {
                 int pivotRow = k;
                 double pivotValue = Math.Abs(U[k, k]);
 
-                for (int i = k + 1; i < n; i++)
+                for (int i = k + 1; i < Size; i++)
                 {
                     if (Math.Abs(U[i, k]) > pivotValue)
                     {
@@ -159,7 +167,7 @@ namespace GUI_Demo
                 if (pivotRow != k)
                 {
                     double temp;
-                    for (int j = 0; j < n; j++)
+                    for (int j = 0; j < Size; j++)
                     {
                         temp = U[k, j];
                         U[k, j] = U[pivotRow, j];
@@ -178,32 +186,32 @@ namespace GUI_Demo
                     }
                 }
 
-                for (int i = k + 1; i < n; i++)
+                for (int i = k + 1; i < Size; i++)
                 {
                     double factor = U[i, k] / U[k, k];
                     L[i, k] = factor;
-                    for (int j = k; j < n; j++)
+                    for (int j = k; j < Size; j++)
                     {
                         U[i, j] -= factor * U[k, j];
                     }
                 }
             }
 
-            double[] y = new double[n];
-            for (int i = 0; i < n; i++)
+            double[] y = new double[Size];
+            for (int i = 0; i < Size; i++)
             {
-                y[i] = BMatrix[P[i]];
+                y[i] = Constants[P[i]];
                 for (int j = 0; j < i; j++)
                 {
                     y[i] -= L[i, j] * y[j];
                 }
             }
 
-            double[] x = new double[n];
-            for (int i = n - 1; i >= 0; i--)
+            double[] x = new double[Size];
+            for (int i = Size - 1; i >= 0; i--)
             {
                 x[i] = y[i];
-                for (int j = i + 1; j < n; j++)
+                for (int j = i + 1; j < Size; j++)
                 {
                     x[i] -= U[i, j] * x[j];
                 }
@@ -211,6 +219,55 @@ namespace GUI_Demo
             }
 
             return x;
+        }
+        public double[] SolveGraphical()
+        {
+            List<double> result = new List<double>();
+
+            Form graphicalForm = new Form();
+            graphicalForm.Text = "Графік рівнянь";
+            graphicalForm.Size = new System.Drawing.Size(600, 400);
+
+            Chart chart = new Chart();
+            chart.Parent = graphicalForm;
+            chart.Dock = DockStyle.Fill;
+            chart.ChartAreas.Add(new ChartArea("Equations plot"));
+            chart.ChartAreas[0].AxisX.Minimum = -10;
+            chart.ChartAreas[0].AxisX.Maximum = 10;
+            chart.ChartAreas[0].AxisY.Minimum = -10;
+            chart.ChartAreas[0].AxisY.Maximum = 10;
+
+            Series series1 = new Series();
+            series1.ChartType = SeriesChartType.Line;
+            series1.Color = Color.Blue;
+            series1.BorderWidth = 3;
+
+            Series series2 = new Series();
+            series2.ChartType = SeriesChartType.Line;
+            series2.Color = Color.Red;
+            series2.BorderWidth = 3;
+
+            for (double x = -10; x <= 10; x += 0.1)
+            {
+                double y1 = (Constants[0] - Coefficients[0, 0] * x) / Coefficients[0, 1];
+                series1.Points.AddXY(x, y1);
+
+                double y2 = (Constants[1] - Coefficients[1, 0] * x) / Coefficients[1, 1];
+                series2.Points.AddXY(x, y2);
+
+                if (Math.Abs(y1 - y2) < 0.1)
+                {
+                    result.Add(x);
+                    result.Add(y1);
+                }
+            }
+
+            chart.Series.Add(series1);
+            chart.Series.Add(series2);
+
+            graphicalForm.ShowDialog();
+
+            return result.ToArray();
         }
     }
 }
