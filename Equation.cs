@@ -12,23 +12,23 @@ namespace GUI_Demo
 {
     public class Equation
     {
-        public double[,] Coefficients { get; set; }
-        public double[] Constants { get; set; }
-        int Size {  get; set; }
+        private double[,] Coefficients { get; set; }
+        private double[] Constants { get; set; }
+        private int Size {  get; set; }
         public Equation(double[,] coefficients, double[] constants, int size)
         {
             Coefficients = coefficients;
             Constants = constants;
             Size = size;
         }
-        private double[,] TransposeCoefficients()
+        private double[,] Transpose(double[,] matrix, int n)
         {
-            double[,] transMatrix = new double[Size, Size];
-            for (int i = 0; i < Size; i++)
+            double[,] transMatrix = new double[n, n];
+            for (int i = 0; i < n; i++)
             {
-                for (int j = 0; j < Size; j++)
+                for (int j = 0; j < n; j++)
                 {
-                    transMatrix[i, j] = Coefficients[j, i];
+                    transMatrix[i, j] = matrix[j, i];
                 }
             }
             return transMatrix;
@@ -68,7 +68,7 @@ namespace GUI_Demo
                 }
             }
 
-            double[,] St = TransposeCoefficients();
+            double[,] St = Transpose(S, Size);
 
             y[0] = Constants[0] / S[0, 0];
             for (int i = 1; i < Size; i++)

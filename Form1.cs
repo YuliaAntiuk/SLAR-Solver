@@ -27,7 +27,6 @@ namespace GUI_Demo
         }
         private void DisplayEquations(int dimension)
         {
-            // Очищаємо контейнер перед додаванням нових елементів
             EquationsContainer.Controls.Clear();
             const int textBoxWidth = 50;
             const int textBoxSpacing = 5;
@@ -38,7 +37,6 @@ namespace GUI_Demo
                 int x = 0;
                 for (int j = 0; j < dimension; j++)
                 {
-                    // Текстове поле для коефіцієнта невідомої
                     TextBox coefficientTextBox = new TextBox();
                     coefficientTextBox.Name = $"textBoxCoeff{i + 1}{j + 1}";
                     coefficientTextBox.Width = textBoxWidth;
@@ -48,14 +46,12 @@ namespace GUI_Demo
                     EquationsContainer.Controls.Add(coefficientTextBox);
                     x = coefficientTextBox.Right + textBoxSpacing;
                 }
-                // Назва невідомої (наприклад, x1, x2, ..., xn)
                 Label variableLabel = new Label();
                 variableLabel.Text = $"x{i + 1}";
                 variableLabel.AutoSize = true;
                 variableLabel.Location = new Point(x, yOffset * i);
                 EquationsContainer.Controls.Add(variableLabel);
                 x = variableLabel.Right + textBoxSpacing;
-                // Додавання знака "=" до контейнера
                 Label equalsLabel = new Label();
                 equalsLabel.Text = " = ";
                 equalsLabel.AutoSize = true;
@@ -63,7 +59,6 @@ namespace GUI_Demo
                 EquationsContainer.Controls.Add(equalsLabel);
                 x = equalsLabel.Right + textBoxSpacing;
 
-                // Додавання текстового поля для введення вільного члена рівняння
                 TextBox constantTextBox = new TextBox();
                 constantTextBox.Name = $"textBoxConstant{i + 1}";
                 constantTextBox.Width = textBoxWidth;
@@ -100,10 +95,8 @@ namespace GUI_Demo
         }
         private bool IsDimensionEntered()
         {
-            int dimension;
-            if (int.TryParse(DimensionInput.Text, out dimension))
+            if (int.TryParse(DimensionInput.Text, out int dimension))
             {
-                // Перевірити, чи розмірність є позитивним цілим числом
                 return dimension > 0 && dimension <= 10;
             }
             return false;
@@ -224,24 +217,12 @@ namespace GUI_Demo
         private void OutputResults(double[] result)
         {
             int panelY = EquationsContainer.Bottom + 15;
-            Panel resultPanel = new Panel();
+            ResultPanel resultPanel = new ResultPanel(result);
             resultPanel.Height = 30 * result.Length;
             resultPanel.Name = "resultPanel";
             resultPanel.Location = new System.Drawing.Point(18, panelY);
             this.Controls.Add(resultPanel);
-            int labelY = 0;
-            for (int i = 0; i < result.Length; i++)
-            {
-                Label resultLabel = new Label();
-                resultLabel.Text = $"x{i + 1} = {result[i]}";
-                resultLabel.AutoSize = true;
-                resultLabel.Font = new Font("Microsoft Sans Serif", 10f, FontStyle.Regular);
-
-                resultLabel.Location = new Point(0, labelY);
-                resultPanel.Controls.Add(resultLabel); 
-
-                labelY += 30; 
-            }
+            resultPanel.UpdatePanelContent();
             SolveBtn.Enabled = false;
             int clearBtnY = resultPanel.Bottom + 15;
             DisableInputs();
