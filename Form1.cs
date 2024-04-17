@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Forms.DataVisualization.Charting;
+using System.Text.RegularExpressions;
 
 namespace GUI_Demo
 {
@@ -20,7 +20,6 @@ namespace GUI_Demo
         {
             InitializeComponent();
             this.KeyPreview = true;
-
             DimensionInput.KeyPress += DimensionInput_KeyPress;
             SolveBtn.Enabled = false;
             this.AutoScroll = true;
@@ -42,6 +41,7 @@ namespace GUI_Demo
                     coefficientTextBox.Width = textBoxWidth;
                     coefficientTextBox.Location = new Point(x, yOffset * i);
                     coefficientTextBox.TextChanged += TextBox_TextChanged;
+                    coefficientTextBox.Validating += textBox_Validating;
                     coefficientTextBoxes.Add(coefficientTextBox);
                     EquationsContainer.Controls.Add(coefficientTextBox);
                     x = coefficientTextBox.Right + textBoxSpacing;
@@ -64,6 +64,7 @@ namespace GUI_Demo
                 constantTextBox.Width = textBoxWidth;
                 constantTextBox.Location = new Point(x, yOffset * i);
                 constantTextBox.TextChanged += TextBox_TextChanged;
+                constantTextBox.Validating += textBox_Validating;
                 constantTextBoxes.Add(constantTextBox);
                 EquationsContainer.Controls.Add(constantTextBox);
             }
@@ -107,12 +108,9 @@ namespace GUI_Demo
         }
         private void UpdateSolveButtonState()
         {
-            bool isDimensionEntered = IsDimensionEntered();
-            bool isMethodSelected = IsMethodSelected();
             bool areCoefficientsEntered = true;
             bool areConstantsEntered = true;
 
-            // Перевірка текстових полів для коефіцієнтів
             foreach (TextBox textBox in coefficientTextBoxes)
             {
                 if (string.IsNullOrEmpty(textBox.Text))
@@ -121,7 +119,7 @@ namespace GUI_Demo
                     break;
                 }
             }
-            // Перевірка текстових полів для вільних членів
+
             foreach (TextBox textBox in constantTextBoxes)
             {
                 if (string.IsNullOrEmpty(textBox.Text))
@@ -131,7 +129,7 @@ namespace GUI_Demo
                 }
             }
             // Оновлення стану кнопки "Розв'язати"
-            SolveBtn.Enabled = isDimensionEntered && isMethodSelected && areCoefficientsEntered && areConstantsEntered;
+            SolveBtn.Enabled = IsDimensionEntered() && IsMethodSelected() && areCoefficientsEntered && areConstantsEntered;
         }
         private void DimensionInput_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -269,14 +267,6 @@ namespace GUI_Demo
         {
             UpdateSolveButtonState(); // Оновити стан кнопки "Розв'язати"
         }
-        private void TextBox_Validating(object sender, CancelEventArgs e)
-        {
-
-        }
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
         private void clearBtn_Click(object sender, EventArgs e)
         {
             Controls.RemoveByKey("resultPanel");  
@@ -289,25 +279,19 @@ namespace GUI_Demo
             comboBoxMethods.Items.Remove("Графічний метод");
             EnableInputs();
         }
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
-        private void textBox2_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-        private void label3_Click(object sender, EventArgs e)
-        {
-
-        }
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateSolveButtonState();
         }
-        private void label3_Click_1(object sender, EventArgs e)
+        private void textBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
-
+            TextBox textBox = sender as TextBox;
+            string text = textBox.Text;
+            if (!Regex.IsMatch(text, @"^[0-9.-]*$"))
+            {
+                MessageBox.Show("Введено некоретктні символи!", "Помилка вводу", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                e.Cancel = true; 
+            }
         }
     }
 }

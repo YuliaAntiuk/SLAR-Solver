@@ -32,9 +32,5 @@ namespace GUI_Demo
                 labelY += 30;
             }
         }
-        public void ClearPanel()
-        {
-            this.Controls.Clear();
-        }
     }
 }

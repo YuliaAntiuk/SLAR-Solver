@@ -57,7 +57,6 @@
             this.label1.Size = new System.Drawing.Size(342, 25);
             this.label1.TabIndex = 1;
             this.label1.Text = "Вкажіть кількість рівнянь в системі";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // DimensionInput
             // 
@@ -101,7 +100,6 @@
             this.label3.Size = new System.Drawing.Size(271, 25);
             this.label3.TabIndex = 18;
             this.label3.Text = "Оберіть метод розв\'язання";
-            this.label3.Click += new System.EventHandler(this.label3_Click_1);
             // 
             // EquationsContainer
             // 
