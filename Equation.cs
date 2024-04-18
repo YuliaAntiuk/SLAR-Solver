@@ -14,9 +14,9 @@ namespace GUI_Demo
 {
     public class Equation
     {
-        private double[,] Coefficients { get; set; }
-        private double[] Constants { get; set; }
-        private int Size {  get; set; }
+        public double[,] Coefficients { get; set; }
+        public double[] Constants { get; set; }
+        public int Size {  get; set; }
         public Equation(double[,] coefficients, double[] constants, int size)
         {
             Coefficients = coefficients;
@@ -74,6 +74,22 @@ namespace GUI_Demo
         public bool IsSolvable()
         {
             return (CalculateDeterminant(Coefficients) != 0);
+        }
+        public bool IsSymetrical()
+        {
+            double[,] transposed = Transpose(Coefficients, Size);
+            for (int i = 0; i < Size; i++)
+            {
+                for (int j = 0; j < Size; j++)
+                {
+                    if (Coefficients[i, j] != transposed[i, j])
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
         public double[] CalculateSqrtMethod()
         {

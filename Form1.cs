@@ -199,6 +199,19 @@ namespace GUI_Demo
 
             this.Controls.Add(clearBtn);
         }
+        private void Create_Btn_Export(int x, int y)
+        {
+            Button clearBtn = new Button();
+
+            clearBtn.Text = "Експорт";
+            clearBtn.Location = new System.Drawing.Point(x, y);
+            clearBtn.Size = new System.Drawing.Size(150, 30);
+            clearBtn.Font = new Font("Microsoft Sans Serif", 11f, FontStyle.Regular);
+            clearBtn.Click += new EventHandler(exportBtn_Click);
+            clearBtn.Name = "exportBtn";
+
+            this.Controls.Add(clearBtn);
+        }
         private void SolveBtn_Click(object sender, EventArgs e)
         {
             int dimension = Convert.ToInt32(DimensionInput.Text);
@@ -206,14 +219,21 @@ namespace GUI_Demo
             string selectedMethod = comboBoxMethods.SelectedItem.ToString();
             if (!equations.IsSolvable())
             {
-                MessageBox.Show("Система має нуль або безліч розв'язків", "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error );
+                MessageBox.Show("Система має нуль або безліч розв'язків", "Нульовий визначник", MessageBoxButtons.OK, MessageBoxIcon.Error );
             } else
             {
                 double[] result = new double[dimension];
                 switch (selectedMethod)
                 {
                     case "Метод квадратного кореня":
-                        result = equations.CalculateSqrtMethod();
+                        if (equations.CalculateDeterminant(equations.Coefficients) < 0 || !equations.IsSymetrical())
+                        {
+                            MessageBox.Show("Матриця коефіцієнтів несиметрична або має від'ємний визначник", "Систему неможливо розв'язати даним методом", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        } else
+                        {
+                            result = equations.CalculateSqrtMethod();
+                        }
                         break;
                     case "Метод обертання":
                         result = equations.CalculateRotationMethod();
@@ -244,6 +264,7 @@ namespace GUI_Demo
             DisableInputs();
             Create_Btn_Clear(18, clearBtnY);
             Create_Btn_ChangeMethod(200, clearBtnY);
+            Create_Btn_Export(382, clearBtnY);
         }
         private void changeBtn_Click(object sender, EventArgs e)
         {
@@ -251,7 +272,16 @@ namespace GUI_Demo
             Controls.RemoveByKey("resultPanel");
             Controls.RemoveByKey("clearBtn");
             Controls.RemoveByKey("changeBtn");
+            Controls.RemoveByKey("exportBtn");
             SolveBtn.Enabled = true;
+        }
+        private void exportBtn_Click(object sender, EventArgs e)
+        {
+            int dimension = Convert.ToInt32(DimensionInput.Text);
+            Equation equation = ReadEquationsValues(dimension);
+            Export export = new Export();
+            string exportData = export.FormatData(equation);
+            export.OpenExportFile(exportData);
         }
         private void DisableInputs()
         {
@@ -292,6 +322,7 @@ namespace GUI_Demo
             EquationsContainer.Height = 0;
             Controls.RemoveByKey("clearBtn");
             Controls.RemoveByKey("changeBtn");
+            Controls.RemoveByKey("exportBtn");
             DimensionInput.Text = "";
             comboBoxMethods.SelectedItem = null;
             comboBoxMethods.Items.Remove("Графічний метод");
