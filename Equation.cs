@@ -23,7 +23,7 @@ namespace GUI_Demo
             Constants = constants;
             Size = size;
         }
-        private double[,] CalculateMinor(double[,] matrix, int index)
+        public double[,] CalculateMinor(double[,] matrix, int index)
         {
             int n = matrix.GetLength(0);
             double[,] minor = new double[n - 1, n - 1];
@@ -56,6 +56,10 @@ namespace GUI_Demo
         public double CalculateDeterminant(double[,] matrix)
         {
             int n = matrix.GetLength(0);
+            if(n == 1)
+            {
+                return matrix[0, 0];
+            }
             double determinant = 0;
             int sign = 1;
             for (int i = 0; i < n; i++)
@@ -66,6 +70,10 @@ namespace GUI_Demo
                 sign = -sign;
             }
             return determinant;
+        }
+        public bool IsSolvable()
+        {
+            return (CalculateDeterminant(Coefficients) != 0);
         }
         public double[] CalculateSqrtMethod()
         {

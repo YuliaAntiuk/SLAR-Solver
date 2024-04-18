@@ -27,6 +27,7 @@ namespace GUI_Demo
         private void DisplayEquations(int dimension)
         {
             EquationsContainer.Controls.Clear();
+            SolveBtn.Enabled = false;
             const int textBoxWidth = 50;
             const int textBoxSpacing = 5;
             int yOffset = 30;
@@ -131,12 +132,21 @@ namespace GUI_Demo
             // Оновлення стану кнопки "Розв'язати"
             SolveBtn.Enabled = IsDimensionEntered() && IsMethodSelected() && areCoefficientsEntered && areConstantsEntered;
         }
+        private bool IsItemInComboBox(object itemToFind, ComboBox comboBox)
+        {
+            foreach (object item in comboBox.Items)
+            {
+                if (item.Equals(itemToFind))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         private void DimensionInput_KeyPress(object sender, KeyPressEventArgs e)
         {
-            // Перевіряємо чи натиснута клавіша Enter
             if (e.KeyChar == (char)Keys.Enter)
             {
-                // Отримуємо розмірність системи з textBoxDimension
                 if (int.TryParse(DimensionInput.Text, out int dimension))
                 {
                     if (dimension < 2 || dimension > 10)
@@ -144,7 +154,6 @@ namespace GUI_Demo
                         MessageBox.Show("Розмірність системи повинна бути між 2 та 10", "Помилка введення", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     } else
                     {
-                        // Відображаємо рівняння з відповідною кількістю невідомих
                         DisplayEquations(dimension);
                     }
                 }
@@ -154,7 +163,10 @@ namespace GUI_Demo
                 }
                 if (dimension == 2)
                 {
-                    comboBoxMethods.Items.Add("Графічний метод");
+                    if(!IsItemInComboBox("Графічний метод", comboBoxMethods))
+                    {
+                        comboBoxMethods.Items.Add("Графічний метод");
+                    }
                 } else
                 {
                     comboBoxMethods.Items.Remove("Графічний метод");
@@ -192,25 +204,31 @@ namespace GUI_Demo
             int dimension = Convert.ToInt32(DimensionInput.Text);
             Equation equations = ReadEquationsValues(dimension);
             string selectedMethod = comboBoxMethods.SelectedItem.ToString();
-            double[] result = new double[dimension];
-            switch (selectedMethod)
+            if (!equations.IsSolvable())
             {
-                case "Метод квадратного кореня":
-                    result = equations.CalculateSqrtMethod();
-                    break;
-                case "Метод обертання":
-                    result = equations.CalculateRotationMethod();
-                    break;
-                case "LUP-метод":
-                    result = equations.CalculateLUPMethod();
-                    break;
-                case "Графічний метод":
-                    result = equations.SolveGraphical();
-                    break;
-                default:
-                    break;
+                MessageBox.Show("Система має нуль або безліч розв'язків", "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error );
+            } else
+            {
+                double[] result = new double[dimension];
+                switch (selectedMethod)
+                {
+                    case "Метод квадратного кореня":
+                        result = equations.CalculateSqrtMethod();
+                        break;
+                    case "Метод обертання":
+                        result = equations.CalculateRotationMethod();
+                        break;
+                    case "LUP-метод":
+                        result = equations.CalculateLUPMethod();
+                        break;
+                    case "Графічний метод":
+                        result = equations.SolveGraphical();
+                        break;
+                    default:
+                        break;
+                }
+                OutputResults(result);
             }
-            OutputResults(result);
         }
         private void OutputResults(double[] result)
         {
