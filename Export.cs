@@ -11,7 +11,8 @@ namespace GUI_Demo
 {
     public class Export
     {
-        public string FormatData(Equation equation)
+        private string Data { get; set; }
+        public Export (Equation equation)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("[");
@@ -27,31 +28,31 @@ namespace GUI_Demo
                 sb.Append("]");
                 sb.Append("\t\t[");
                 sb.Append($"x{i+1}");
-                sb.AppendLine("]");
+                sb.Append("]");
                 sb.Append("\t\t[");
                 sb.Append(equation.Constants[i]);
-                sb.AppendLine("]");
+                sb.Append("]");
+                sb.AppendLine();
             }
             sb.AppendLine("]");
 
-            // Додаємо розв'язок у форматі [r1, r2, ..., rn]
             sb.Append("Розв'язок: [");
             for (int i = 0; i < equation.Size; i++)
             {
-                sb.Append(equation.Constants[i]);
+                sb.Append(equation.Result[i]);
                 if (i < equation.Size - 1)
                     sb.Append(", ");
             }
             sb.AppendLine("]");
-            return sb.ToString();
+            Data = sb.ToString();
         }
-        public void ExportToFile(string exportData, string fileName)
+        public void ExportToFile(string fileName)
         {
             try
             {
                 using (StreamWriter writer = new StreamWriter(fileName))
                 {
-                    writer.Write(exportData);
+                    writer.Write(Data);
                 }
                 MessageBox.Show("Дані успішно експортовано до файлу: " + fileName, "Експорт завершено", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -60,7 +61,7 @@ namespace GUI_Demo
                 MessageBox.Show("Сталася помилка при експорті даних: " + ex.Message, "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        public void OpenExportFile(string data)
+        public void OpenExportFile()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Текстові файли (*.txt)|*.txt";
@@ -68,16 +69,16 @@ namespace GUI_Demo
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                string existingFileName = openFileDialog.FileName;
+                string fileName = openFileDialog.FileName;
                 string existingFileContent;
                 try
                 {
-                    using (StreamReader reader = new StreamReader(existingFileName))
+                    using (StreamReader reader = new StreamReader(fileName))
                     {
                         existingFileContent = reader.ReadToEnd();
                     }
-                    string exportData = existingFileContent + "\n" + data;
-                    ExportToFile(exportData, existingFileName);
+                    Data += existingFileContent + "\n";
+                    ExportToFile(fileName);
                 }
                 catch (Exception ex)
                 {

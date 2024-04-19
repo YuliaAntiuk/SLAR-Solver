@@ -222,7 +222,6 @@ namespace GUI_Demo
                 MessageBox.Show("Система має нуль або безліч розв'язків", "Нульовий визначник", MessageBoxButtons.OK, MessageBoxIcon.Error );
             } else
             {
-                double[] result = new double[dimension];
                 switch (selectedMethod)
                 {
                     case "Метод квадратного кореня":
@@ -232,22 +231,22 @@ namespace GUI_Demo
                             return;
                         } else
                         {
-                            result = equations.CalculateSqrtMethod();
+                            equations.CalculateSqrtMethod();
                         }
                         break;
                     case "Метод обертання":
-                        result = equations.CalculateRotationMethod();
+                        equations.CalculateRotationMethod();
                         break;
                     case "LUP-метод":
-                        result = equations.CalculateLUPMethod();
+                        equations.CalculateLUPMethod();
                         break;
                     case "Графічний метод":
-                        result = equations.SolveGraphical();
+                        equations.SolveGraphical();
                         break;
                     default:
                         break;
                 }
-                OutputResults(result);
+                OutputResults(equations.Result);
             }
         }
         private void OutputResults(double[] result)
@@ -279,9 +278,8 @@ namespace GUI_Demo
         {
             int dimension = Convert.ToInt32(DimensionInput.Text);
             Equation equation = ReadEquationsValues(dimension);
-            Export export = new Export();
-            string exportData = export.FormatData(equation);
-            export.OpenExportFile(exportData);
+            Export export = new Export(equation);
+            export.OpenExportFile();
         }
         private void DisableInputs()
         {

@@ -17,11 +17,13 @@ namespace GUI_Demo
         public double[,] Coefficients { get; set; }
         public double[] Constants { get; set; }
         public int Size {  get; set; }
+        public double[] Result { get; set; }
         public Equation(double[,] coefficients, double[] constants, int size)
         {
             Coefficients = coefficients;
             Constants = constants;
             Size = size;
+            Result = new double[size];
         }
         public double[,] CalculateMinor(double[,] matrix, int index)
         {
@@ -91,11 +93,10 @@ namespace GUI_Demo
 
             return true;
         }
-        public double[] CalculateSqrtMethod()
+        public void CalculateSqrtMethod()
         {
             double[,] S = new double[Size, Size];
             double[] y = new double[Size];
-            double[] x = new double[Size];
 
             for (int i = 0; i < Size; i++)
             {
@@ -139,23 +140,19 @@ namespace GUI_Demo
                 y[i] = (Constants[i] - sum) / S[i, i];
             }
 
-            x[Size - 1] = y[Size - 1] / S[Size - 1, Size - 1];
+            Result[Size - 1] = y[Size - 1] / S[Size - 1, Size - 1];
             for (int i = Size - 2; i >= 0; i--)
             {
                 double sum = 0;
                 for (int j = i + 1; j < Size; j++)
                 {
-                    sum += St[i, j] * x[j];
+                    sum += St[i, j] * Result[j];
                 }
-                x[i] = (y[i] - sum) / S[i, i];
+                Result[i] = (y[i] - sum) / S[i, i];
             }
-
-            return x;
         }
-        public double[] CalculateRotationMethod()
+        public void CalculateRotationMethod()
         {
-            double[] x = new double[Size];
-
             for (int i = 0; i < Size - 1; i++)
             {
                 for (int k = i + 1; k < Size; k++)
@@ -184,14 +181,12 @@ namespace GUI_Demo
                 double sum = 0;
                 for (int j = i + 1; j < Size; j++)
                 {
-                    sum += Coefficients[i, j] * x[j];
+                    sum += Coefficients[i, j] * Result[j];
                 }
-                x[i] = (Constants[i] - sum) / Coefficients[i, i];
+                Result[i] = (Constants[i] - sum) / Coefficients[i, i];
             }
-
-            return x;
         }
-        public double[] CalculateLUPMethod()
+        public void CalculateLUPMethod()
         {
             double[,] L = new double[Size, Size];
             double[,] U = new double[Size, Size];
@@ -264,21 +259,17 @@ namespace GUI_Demo
                     y[i] -= L[i, j] * y[j];
                 }
             }
-
-            double[] x = new double[Size];
             for (int i = Size - 1; i >= 0; i--)
             {
-                x[i] = y[i];
+                Result[i] = y[i];
                 for (int j = i + 1; j < Size; j++)
                 {
-                    x[i] -= U[i, j] * x[j];
+                    Result[i] -= U[i, j] * Result[j];
                 }
-                x[i] /= U[i, i];
+                Result[i] /= U[i, i];
             }
-
-            return x;
         }
-        public double[] SolveGraphical()
+        public void SolveGraphical()
         {
             List<double> result = new List<double>();
 
@@ -325,7 +316,7 @@ namespace GUI_Demo
 
             graphicalForm.ShowDialog();
 
-            return result.ToArray();
+            Result = result.ToArray();
         }
     }
 }
