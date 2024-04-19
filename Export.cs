@@ -15,7 +15,7 @@ namespace GUI_Demo
         public Export (Equation equation)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("Матриця коефіцієнтів\t\t\tВектор невідомих\tВектор вільних членів");
+            sb.AppendLine("Матриця коефіцієнтів\t\tВектор невідомих\tВектор вільних членів");
             sb.AppendLine("[");
             for (int i = 0; i < equation.Size; i++)
             {

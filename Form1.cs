@@ -14,8 +14,8 @@ namespace GUI_Demo
 {
     public partial class Form1 : Form
     {
-        private List<TextBox> coefficientTextBoxes = new List<TextBox>();
-        private List<TextBox> constantTextBoxes = new List<TextBox>();
+        private readonly List<TextBox> coefficientTextBoxes = new List<TextBox>();
+        private readonly List<TextBox> constantTextBoxes = new List<TextBox>();
         private Equation equation;
         public Form1()
         {
@@ -43,7 +43,7 @@ namespace GUI_Demo
                     coefficientTextBox.Width = textBoxWidth;
                     coefficientTextBox.Location = new Point(x, yOffset * i);
                     coefficientTextBox.TextChanged += TextBox_TextChanged;
-                    coefficientTextBox.Validating += textBox_Validating;
+                    coefficientTextBox.Validating += TextBox_Validating;
                     coefficientTextBoxes.Add(coefficientTextBox);
                     EquationsContainer.Controls.Add(coefficientTextBox);
                     x = coefficientTextBox.Right + textBoxSpacing;
@@ -66,7 +66,7 @@ namespace GUI_Demo
                 constantTextBox.Width = textBoxWidth;
                 constantTextBox.Location = new Point(x, yOffset * i);
                 constantTextBox.TextChanged += TextBox_TextChanged;
-                constantTextBox.Validating += textBox_Validating;
+                constantTextBox.Validating += TextBox_Validating;
                 constantTextBoxes.Add(constantTextBox);
                 EquationsContainer.Controls.Add(constantTextBox);
             }
@@ -95,6 +95,7 @@ namespace GUI_Demo
             }
             this.equation = new Equation(coefficients, constants, dimension);
         }
+        //validation
         private bool IsDimensionEntered()
         {
             if (int.TryParse(DimensionInput.Text, out int dimension))
@@ -103,6 +104,7 @@ namespace GUI_Demo
             }
             return false;
         }
+        //validation
         private bool IsMethodSelected()
         {
             return comboBoxMethods.SelectedIndex != -1;
@@ -132,6 +134,7 @@ namespace GUI_Demo
             // Оновлення стану кнопки "Розв'язати"
             SolveBtn.Enabled = IsDimensionEntered() && IsMethodSelected() && areCoefficientsEntered && areConstantsEntered;
         }
+        //validation
         private bool IsItemInComboBox(object itemToFind, ComboBox comboBox)
         {
             foreach (object item in comboBox.Items)
@@ -181,7 +184,7 @@ namespace GUI_Demo
             clearBtn.Location = new System.Drawing.Point(x, y);
             clearBtn.Size = new System.Drawing.Size(150, 30);
             clearBtn.Font = new Font("Microsoft Sans Serif", 11f, FontStyle.Regular);
-            clearBtn.Click += new EventHandler(clearBtn_Click);
+            clearBtn.Click += new EventHandler(ClearBtn_Click);
             clearBtn.Name = "clearBtn";
 
             this.Controls.Add(clearBtn);
@@ -194,7 +197,7 @@ namespace GUI_Demo
             clearBtn.Location = new System.Drawing.Point(x, y);
             clearBtn.Size = new System.Drawing.Size(150, 30);
             clearBtn.Font = new Font("Microsoft Sans Serif", 11f, FontStyle.Regular);
-            clearBtn.Click += new EventHandler(changeBtn_Click);
+            clearBtn.Click += new EventHandler(ChangeBtn_Click);
             clearBtn.Name = "changeBtn";
 
             this.Controls.Add(clearBtn);
@@ -207,11 +210,12 @@ namespace GUI_Demo
             clearBtn.Location = new System.Drawing.Point(x, y);
             clearBtn.Size = new System.Drawing.Size(150, 30);
             clearBtn.Font = new Font("Microsoft Sans Serif", 11f, FontStyle.Regular);
-            clearBtn.Click += new EventHandler(exportBtn_Click);
+            clearBtn.Click += new EventHandler(ExportBtn_Click);
             clearBtn.Name = "exportBtn";
 
             this.Controls.Add(clearBtn);
         }
+        //eventhandler
         private void SolveBtn_Click(object sender, EventArgs e)
         {
             int dimension = Convert.ToInt32(DimensionInput.Text);
@@ -265,7 +269,8 @@ namespace GUI_Demo
             Create_Btn_ChangeMethod(200, clearBtnY);
             Create_Btn_Export(382, clearBtnY);
         }
-        private void changeBtn_Click(object sender, EventArgs e)
+        //eventhandler
+        private void ChangeBtn_Click(object sender, EventArgs e)
         {
             comboBoxMethods.Enabled = true;
             Controls.RemoveByKey("resultPanel");
@@ -274,7 +279,8 @@ namespace GUI_Demo
             Controls.RemoveByKey("exportBtn");
             SolveBtn.Enabled = true;
         }
-        private void exportBtn_Click(object sender, EventArgs e)
+        //eventhandler
+        private void ExportBtn_Click(object sender, EventArgs e)
         {
             Export export = new Export(equation);
             export.OpenExportFile();
@@ -303,15 +309,18 @@ namespace GUI_Demo
                 }
             }
         }
+        //eventhandler
         private void DimensionInput_TextChanged(object sender, EventArgs e)
         {
             UpdateSolveButtonState(); // Оновити стан кнопки "Розв'язати"
         }
-        private void TextBox_TextChanged(object sender, EventArgs e)
+        //eventhandler
+        public void TextBox_TextChanged(object sender, EventArgs e)
         {
             UpdateSolveButtonState(); // Оновити стан кнопки "Розв'язати"
         }
-        private void clearBtn_Click(object sender, EventArgs e)
+        //eventhandler
+        private void ClearBtn_Click(object sender, EventArgs e)
         {
             Controls.RemoveByKey("resultPanel");  
             EquationsContainer.Controls.Clear();  
@@ -324,11 +333,13 @@ namespace GUI_Demo
             comboBoxMethods.Items.Remove("Графічний метод");
             EnableInputs();
         }
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        //eventhandler
+        private void ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateSolveButtonState();
         }
-        private void textBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        //validation
+        private void TextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
             TextBox textBox = sender as TextBox;
             string text = textBox.Text;

@@ -73,10 +73,12 @@ namespace GUI_Demo
             }
             return determinant;
         }
+        //validation
         public bool IsSolvable()
         {
             return (CalculateDeterminant(Coefficients) != 0);
         }
+        //validation
         public bool IsSymetrical()
         {
             double[,] transposed = Transpose(Coefficients, Size);

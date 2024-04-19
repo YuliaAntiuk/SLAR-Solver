@@ -89,7 +89,7 @@
             this.comboBoxMethods.Name = "comboBoxMethods";
             this.comboBoxMethods.Size = new System.Drawing.Size(268, 28);
             this.comboBoxMethods.TabIndex = 16;
-            this.comboBoxMethods.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            this.comboBoxMethods.SelectedIndexChanged += new System.EventHandler(this.ComboBox1_SelectedIndexChanged);
             // 
             // label3
             // 
