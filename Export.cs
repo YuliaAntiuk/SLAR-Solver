@@ -15,13 +15,14 @@ namespace GUI_Demo
         public Export (Equation equation)
         {
             StringBuilder sb = new StringBuilder();
+            sb.AppendLine("Матриця коефіцієнтів\t\t\tВектор невідомих\tВектор вільних членів");
             sb.AppendLine("[");
             for (int i = 0; i < equation.Size; i++)
             {
                 sb.Append("[");
                 for (int j = 0; j < equation.Size; j++)
                 {
-                    sb.Append(equation.Coefficients[i, j]);
+                    sb.Append($"{equation.Coefficients[i, j], -8:F6}");
                     if (j < equation.Size - 1)
                         sb.Append(", ");
                 }
@@ -30,9 +31,8 @@ namespace GUI_Demo
                 sb.Append($"x{i+1}");
                 sb.Append("]");
                 sb.Append("\t\t[");
-                sb.Append(equation.Constants[i]);
-                sb.Append("]");
-                sb.AppendLine();
+                sb.Append($"{equation.Constants[i], -8:F6}");
+                sb.AppendLine("]");
             }
             sb.AppendLine("]");
 
@@ -46,7 +46,7 @@ namespace GUI_Demo
             sb.AppendLine("]");
             Data = sb.ToString();
         }
-        public void ExportToFile(string fileName)
+        private void ExportToFile(string fileName)
         {
             try
             {
@@ -77,7 +77,7 @@ namespace GUI_Demo
                     {
                         existingFileContent = reader.ReadToEnd();
                     }
-                    Data += existingFileContent + "\n";
+                    Data = existingFileContent + "\n\n" + Data;
                     ExportToFile(fileName);
                 }
                 catch (Exception ex)

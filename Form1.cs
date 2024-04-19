@@ -16,6 +16,7 @@ namespace GUI_Demo
     {
         private List<TextBox> coefficientTextBoxes = new List<TextBox>();
         private List<TextBox> constantTextBoxes = new List<TextBox>();
+        private Equation equation;
         public Form1()
         {
             InitializeComponent();
@@ -71,7 +72,7 @@ namespace GUI_Demo
             }
             EquationsContainer.Height = yOffset * dimension;
         }
-        private Equation ReadEquationsValues(int dimension)
+        private void ReadEquationsValues(int dimension)
         {
             double[,] coefficients = new double[dimension, dimension];
             double[] constants = new double[dimension];
@@ -92,8 +93,7 @@ namespace GUI_Demo
                     constants[i] = constant;
                 }
             }
-            Equation equations = new Equation(coefficients, constants, dimension);
-            return equations;
+            this.equation = new Equation(coefficients, constants, dimension);
         }
         private bool IsDimensionEntered()
         {
@@ -215,9 +215,9 @@ namespace GUI_Demo
         private void SolveBtn_Click(object sender, EventArgs e)
         {
             int dimension = Convert.ToInt32(DimensionInput.Text);
-            Equation equations = ReadEquationsValues(dimension);
+            ReadEquationsValues(dimension);
             string selectedMethod = comboBoxMethods.SelectedItem.ToString();
-            if (!equations.IsSolvable())
+            if (!equation.IsSolvable())
             {
                 MessageBox.Show("Система має нуль або безліч розв'язків", "Нульовий визначник", MessageBoxButtons.OK, MessageBoxIcon.Error );
             } else
@@ -225,28 +225,28 @@ namespace GUI_Demo
                 switch (selectedMethod)
                 {
                     case "Метод квадратного кореня":
-                        if (equations.CalculateDeterminant(equations.Coefficients) < 0 || !equations.IsSymetrical())
+                        if (equation.CalculateDeterminant(equation.Coefficients) < 0 || !equation.IsSymetrical())
                         {
                             MessageBox.Show("Матриця коефіцієнтів несиметрична або має від'ємний визначник", "Систему неможливо розв'язати даним методом", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             return;
                         } else
                         {
-                            equations.CalculateSqrtMethod();
+                            equation.CalculateSqrtMethod();
                         }
                         break;
                     case "Метод обертання":
-                        equations.CalculateRotationMethod();
+                        equation.CalculateRotationMethod();
                         break;
                     case "LUP-метод":
-                        equations.CalculateLUPMethod();
+                        equation.CalculateLUPMethod();
                         break;
                     case "Графічний метод":
-                        equations.SolveGraphical();
+                        equation.SolveGraphical();
                         break;
                     default:
                         break;
                 }
-                OutputResults(equations.Result);
+                OutputResults(equation.Result);
             }
         }
         private void OutputResults(double[] result)
@@ -276,8 +276,6 @@ namespace GUI_Demo
         }
         private void exportBtn_Click(object sender, EventArgs e)
         {
-            int dimension = Convert.ToInt32(DimensionInput.Text);
-            Equation equation = ReadEquationsValues(dimension);
             Export export = new Export(equation);
             export.OpenExportFile();
         }
