@@ -43,7 +43,7 @@ namespace GUI_Demo
                     coefficientTextBox.Width = textBoxWidth;
                     coefficientTextBox.Location = new Point(x, yOffset * i);
                     coefficientTextBox.TextChanged += TextBox_TextChanged;
-                    coefficientTextBox.Validating += TextBox_Validating;
+                    coefficientTextBox.Validating += Validation.TextBox_Validating;
                     coefficientTextBoxes.Add(coefficientTextBox);
                     EquationsContainer.Controls.Add(coefficientTextBox);
                     x = coefficientTextBox.Right + textBoxSpacing;
@@ -66,7 +66,7 @@ namespace GUI_Demo
                 constantTextBox.Width = textBoxWidth;
                 constantTextBox.Location = new Point(x, yOffset * i);
                 constantTextBox.TextChanged += TextBox_TextChanged;
-                constantTextBox.Validating += TextBox_Validating;
+                constantTextBox.Validating += Validation.TextBox_Validating;
                 constantTextBoxes.Add(constantTextBox);
                 EquationsContainer.Controls.Add(constantTextBox);
             }
@@ -95,20 +95,6 @@ namespace GUI_Demo
             }
             this.equation = new Equation(coefficients, constants, dimension);
         }
-        //validation
-        private bool IsDimensionEntered()
-        {
-            if (int.TryParse(DimensionInput.Text, out int dimension))
-            {
-                return dimension > 0 && dimension <= 10;
-            }
-            return false;
-        }
-        //validation
-        private bool IsMethodSelected()
-        {
-            return comboBoxMethods.SelectedIndex != -1;
-        }
         private void UpdateSolveButtonState()
         {
             bool areCoefficientsEntered = true;
@@ -131,20 +117,7 @@ namespace GUI_Demo
                     break;
                 }
             }
-            // Оновлення стану кнопки "Розв'язати"
-            SolveBtn.Enabled = IsDimensionEntered() && IsMethodSelected() && areCoefficientsEntered && areConstantsEntered;
-        }
-        //validation
-        private bool IsItemInComboBox(object itemToFind, ComboBox comboBox)
-        {
-            foreach (object item in comboBox.Items)
-            {
-                if (item.Equals(itemToFind))
-                {
-                    return true;
-                }
-            }
-            return false;
+            SolveBtn.Enabled = Validation.IsDimensionEntered(DimensionInput) && Validation.IsMethodSelected(comboBoxMethods) && areCoefficientsEntered && areConstantsEntered;
         }
         private void DimensionInput_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -166,7 +139,7 @@ namespace GUI_Demo
                 }
                 if (dimension == 2)
                 {
-                    if(!IsItemInComboBox("Графічний метод", comboBoxMethods))
+                    if(!Validation.IsItemInComboBox("Графічний метод", comboBoxMethods))
                     {
                         comboBoxMethods.Items.Add("Графічний метод");
                     }
@@ -337,17 +310,6 @@ namespace GUI_Demo
         private void ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateSolveButtonState();
-        }
-        //validation
-        private void TextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            TextBox textBox = sender as TextBox;
-            string text = textBox.Text;
-            if (!Regex.IsMatch(text, @"^[0-9.-]*$"))
-            {
-                MessageBox.Show("Введено некоретктні символи!", "Помилка вводу", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                e.Cancel = true; 
-            }
         }
     }
 }
