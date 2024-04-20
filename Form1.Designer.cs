@@ -1,6 +1,6 @@
 ﻿namespace GUI_Demo
 {
-    partial class Form1
+    partial class InterfaceForm
     {
         /// <summary>
         /// Required designer variable.

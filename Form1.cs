@@ -12,12 +12,12 @@ using System.Text.RegularExpressions;
 
 namespace GUI_Demo
 {
-    public partial class Form1 : Form
+    public partial class InterfaceForm : Form
     {
         private readonly List<TextBox> coefficientTextBoxes = new List<TextBox>();
         private readonly List<TextBox> constantTextBoxes = new List<TextBox>();
         private Equation equation;
-        public Form1()
+        public InterfaceForm()
         {
             InitializeComponent();
             this.KeyPreview = true;
