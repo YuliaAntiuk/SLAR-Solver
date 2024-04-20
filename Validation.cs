@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -8,7 +9,7 @@ using System.Windows.Forms;
 
 namespace GUI_Demo
 {
-    public class Validation
+    public static class Validation
     {
         public static bool IsDimensionEntered(TextBox DimensionInput)
         {
@@ -42,6 +43,25 @@ namespace GUI_Demo
                 MessageBox.Show("Введено некоретктні символи!", "Помилка вводу", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 e.Cancel = true;
             }
+        }
+        public static bool IsSolvable(Equation equation)
+        {
+            return (equation.CalculateDeterminant(equation.Coefficients) != 0);
+        }
+        public static bool IsSymetrical(Equation equation)
+        {
+            double[,] transposed = equation.Transpose(equation.Coefficients, equation.Size);
+            for (int i = 0; i < equation.Size; i++)
+            {
+                for (int j = 0; j < equation.Size; j++)
+                {
+                    if (equation.Coefficients[i, j] != transposed[i, j])
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
     }
 }

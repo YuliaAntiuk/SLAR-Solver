@@ -188,13 +188,12 @@ namespace GUI_Demo
 
             this.Controls.Add(clearBtn);
         }
-        //eventhandler
         private void SolveBtn_Click(object sender, EventArgs e)
         {
             int dimension = Convert.ToInt32(DimensionInput.Text);
             ReadEquationsValues(dimension);
             string selectedMethod = comboBoxMethods.SelectedItem.ToString();
-            if (!equation.IsSolvable())
+            if (!Validation.IsSolvable(equation))
             {
                 MessageBox.Show("Система має нуль або безліч розв'язків", "Нульовий визначник", MessageBoxButtons.OK, MessageBoxIcon.Error );
             } else
@@ -202,7 +201,7 @@ namespace GUI_Demo
                 switch (selectedMethod)
                 {
                     case "Метод квадратного кореня":
-                        if (equation.CalculateDeterminant(equation.Coefficients) < 0 || !equation.IsSymetrical())
+                        if (equation.CalculateDeterminant(equation.Coefficients) < 0 || !Validation.IsSymetrical(equation))
                         {
                             MessageBox.Show("Матриця коефіцієнтів несиметрична або має від'ємний визначник", "Систему неможливо розв'язати даним методом", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             return;
@@ -242,7 +241,6 @@ namespace GUI_Demo
             Create_Btn_ChangeMethod(200, clearBtnY);
             Create_Btn_Export(382, clearBtnY);
         }
-        //eventhandler
         private void ChangeBtn_Click(object sender, EventArgs e)
         {
             comboBoxMethods.Enabled = true;
@@ -252,7 +250,6 @@ namespace GUI_Demo
             Controls.RemoveByKey("exportBtn");
             SolveBtn.Enabled = true;
         }
-        //eventhandler
         private void ExportBtn_Click(object sender, EventArgs e)
         {
             Export export = new Export(equation);
@@ -282,17 +279,14 @@ namespace GUI_Demo
                 }
             }
         }
-        //eventhandler
         private void DimensionInput_TextChanged(object sender, EventArgs e)
         {
             UpdateSolveButtonState(); // Оновити стан кнопки "Розв'язати"
         }
-        //eventhandler
         public void TextBox_TextChanged(object sender, EventArgs e)
         {
             UpdateSolveButtonState(); // Оновити стан кнопки "Розв'язати"
         }
-        //eventhandler
         private void ClearBtn_Click(object sender, EventArgs e)
         {
             Controls.RemoveByKey("resultPanel");  
@@ -306,7 +300,6 @@ namespace GUI_Demo
             comboBoxMethods.Items.Remove("Графічний метод");
             EnableInputs();
         }
-        //eventhandler
         private void ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateSolveButtonState();

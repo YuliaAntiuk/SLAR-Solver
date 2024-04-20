@@ -43,7 +43,7 @@ namespace GUI_Demo
 
             return minor;
         }
-        private double[,] Transpose(double[,] matrix, int n)
+        public double[,] Transpose(double[,] matrix, int n)
         {
             double[,] transMatrix = new double[n, n];
             for (int i = 0; i < n; i++)
@@ -72,28 +72,6 @@ namespace GUI_Demo
                 sign = -sign;
             }
             return determinant;
-        }
-        //validation
-        public bool IsSolvable()
-        {
-            return (CalculateDeterminant(Coefficients) != 0);
-        }
-        //validation
-        public bool IsSymetrical()
-        {
-            double[,] transposed = Transpose(Coefficients, Size);
-            for (int i = 0; i < Size; i++)
-            {
-                for (int j = 0; j < Size; j++)
-                {
-                    if (Coefficients[i, j] != transposed[i, j])
-                    {
-                        return false;
-                    }
-                }
-            }
-
-            return true;
         }
         public void CalculateSqrtMethod()
         {
