@@ -221,11 +221,10 @@ namespace GUI_Demo
 
                 for (int i = k + 1; i < Size; i++)
                 {
-                    double factor = U[i, k] / U[k, k];
-                    L[i, k] = factor;
+                    L[i, k] = U[i, k] / U[k, k];
                     for (int j = k; j < Size; j++)
                     {
-                        U[i, j] -= factor * U[k, j];
+                        U[i, j] -= L[i, k] * U[k, j];
                     }
                 }
             }
@@ -249,7 +248,7 @@ namespace GUI_Demo
                 Result[i] /= U[i, i];
             }
         }
-        public void SolveGraphical()
+        /*public void SolveGraphical()
         {
             List<double> result = new List<double>();
 
@@ -260,11 +259,12 @@ namespace GUI_Demo
             Chart chart = new Chart();
             chart.Parent = graphicalForm;
             chart.Dock = DockStyle.Fill;
-            chart.ChartAreas.Add(new ChartArea("Equations plot"));
-            chart.ChartAreas[0].AxisX.Minimum = -10;
-            chart.ChartAreas[0].AxisX.Maximum = 10;
-            chart.ChartAreas[0].AxisY.Minimum = -10;
-            chart.ChartAreas[0].AxisY.Maximum = 10;
+            ChartArea plot = new ChartArea("Equations plot");
+            chart.ChartAreas.Add(plot);
+            plot.AxisX.Minimum = double.NaN;  
+            plot.AxisX.Maximum = double.NaN;
+            plot.AxisY.Minimum = double.NaN;
+            plot.AxisY.Maximum = double.NaN;
 
             Series series1 = new Series();
             series1.ChartType = SeriesChartType.Line;
@@ -284,7 +284,7 @@ namespace GUI_Demo
                 double y2 = (Constants[1] - Coefficients[1, 0] * x) / Coefficients[1, 1];
                 series2.Points.AddXY(x, y2);
 
-                if (Math.Abs(y1 - y2) < 0.1)
+                if (Math.Abs(y1 - y2) < 0.001)
                 {
                     result.Add(x);
                     result.Add(y1);
@@ -293,10 +293,8 @@ namespace GUI_Demo
 
             chart.Series.Add(series1);
             chart.Series.Add(series2);
-
             graphicalForm.ShowDialog();
-
             Result = result.ToArray();
-        }
+        }*/
     }
 }

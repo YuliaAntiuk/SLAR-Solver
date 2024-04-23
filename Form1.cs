@@ -217,7 +217,8 @@ namespace GUI_Demo
                         equation.CalculateLUPMethod();
                         break;
                     case "Графічний метод":
-                        equation.SolveGraphical();
+                        GraphicSolver graphicSolver = new GraphicSolver(equation);
+                        graphicSolver.SolveGraphical();
                         break;
                     default:
                         break;
