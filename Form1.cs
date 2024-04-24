@@ -17,6 +17,7 @@ namespace GUI_Demo
         private readonly List<TextBox> coefficientTextBoxes = new List<TextBox>();
         private readonly List<TextBox> constantTextBoxes = new List<TextBox>();
         private Equation equation;
+        private List<Button> controlbuttons = new List<Button>();
         public InterfaceForm()
         {
             InitializeComponent();
@@ -149,44 +150,31 @@ namespace GUI_Demo
                 }
             }
         }
-        private void Create_Btn_Clear(int x, int y)
+        private void CreateBtn(int x, int y, string btnText, string btnName, EventHandler eventHandler)
         {
-            Button clearBtn = new Button();
-
-            clearBtn.Text = "Очистити";
-            clearBtn.Location = new System.Drawing.Point(x, y);
-            clearBtn.Size = new System.Drawing.Size(150, 30);
-            clearBtn.Font = new Font("Microsoft Sans Serif", 11f, FontStyle.Regular);
-            clearBtn.Click += new EventHandler(ClearBtn_Click);
-            clearBtn.Name = "clearBtn";
-
-            this.Controls.Add(clearBtn);
+            Button btn = new Button();
+            btn.Text = btnText;
+            btn.Location = new Point(x, y);
+            btn.Size = new System.Drawing.Size(150, 30);
+            btn.Font = new Font("Microsoft Sans Serif", 11f, FontStyle.Regular);
+            btn.Click += new EventHandler(eventHandler);
+            btn.Name = btnName;
+            controlbuttons.Add(btn);
         }
-        private void Create_Btn_ChangeMethod(int x, int y)
+        private void CreateControlButtons(int x, int y)
         {
-            Button clearBtn = new Button();
-
-            clearBtn.Text = "Змінити метод розв'язання";
-            clearBtn.Location = new System.Drawing.Point(x, y);
-            clearBtn.Size = new System.Drawing.Size(150, 30);
-            clearBtn.Font = new Font("Microsoft Sans Serif", 11f, FontStyle.Regular);
-            clearBtn.Click += new EventHandler(ChangeBtn_Click);
-            clearBtn.Name = "changeBtn";
-
-            this.Controls.Add(clearBtn);
-        }
-        private void Create_Btn_Export(int x, int y)
-        {
-            Button clearBtn = new Button();
-
-            clearBtn.Text = "Експорт";
-            clearBtn.Location = new System.Drawing.Point(x, y);
-            clearBtn.Size = new System.Drawing.Size(150, 30);
-            clearBtn.Font = new Font("Microsoft Sans Serif", 11f, FontStyle.Regular);
-            clearBtn.Click += new EventHandler(ExportBtn_Click);
-            clearBtn.Name = "exportBtn";
-
-            this.Controls.Add(clearBtn);
+            string[] textxsForBtn = { "Очистити", "Змінити метод", "Експорт", "Складність" };
+            string[] btnNames = { "clearBtn", "changeBtn", "exportBtn", "complexityBtn" };
+            EventHandler[] eventHandlers = { ClearBtn_Click, ChangeBtn_Click, ExportBtn_Click, ComplexityBtn_Click };
+            for (int i = 0; i < textxsForBtn.Length; i++)
+            {
+                CreateBtn(x, y, textxsForBtn[i], btnNames[i], eventHandlers[i]);
+                x = controlbuttons[i].Right + 30;
+            }
+            foreach (Button button in controlbuttons)
+            {
+                this.Controls.Add(button);
+            }
         }
         private void SolveBtn_Click(object sender, EventArgs e)
         {
@@ -236,25 +224,42 @@ namespace GUI_Demo
             this.Controls.Add(resultPanel);
             resultPanel.UpdatePanelContent();
             SolveBtn.Enabled = false;
-            int clearBtnY = resultPanel.Bottom + 15;
+            int controlPanelY = resultPanel.Bottom + 15;
             DisableInputs();
-            Create_Btn_Clear(18, clearBtnY);
-            Create_Btn_ChangeMethod(200, clearBtnY);
-            Create_Btn_Export(382, clearBtnY);
+            CreateControlButtons(18, controlPanelY);
         }
-        private void ChangeBtn_Click(object sender, EventArgs e)
+        private void RemoveBtns()
         {
-            comboBoxMethods.Enabled = true;
             Controls.RemoveByKey("resultPanel");
             Controls.RemoveByKey("clearBtn");
             Controls.RemoveByKey("changeBtn");
             Controls.RemoveByKey("exportBtn");
+            Controls.RemoveByKey("complexityBtn");
+        }
+        private void ChangeBtn_Click(object sender, EventArgs e)
+        {
+            RemoveBtns();
+            comboBoxMethods.Enabled = true;
             SolveBtn.Enabled = true;
         }
         private void ExportBtn_Click(object sender, EventArgs e)
         {
             Export export = new Export(equation);
             export.OpenExportFile();
+        }
+        private void ClearBtn_Click(object sender, EventArgs e)
+        {
+            EquationsContainer.Controls.Clear();  
+            EquationsContainer.Height = 0;
+            RemoveBtns();
+            DimensionInput.Text = "";
+            comboBoxMethods.SelectedItem = null;
+            comboBoxMethods.Items.Remove("Графічний метод");
+            EnableInputs();
+        }
+        private void ComplexityBtn_Click(object sender, EventArgs e)
+        {
+
         }
         private void DisableInputs()
         {
@@ -287,19 +292,6 @@ namespace GUI_Demo
         public void TextBox_TextChanged(object sender, EventArgs e)
         {
             UpdateSolveButtonState(); // Оновити стан кнопки "Розв'язати"
-        }
-        private void ClearBtn_Click(object sender, EventArgs e)
-        {
-            Controls.RemoveByKey("resultPanel");  
-            EquationsContainer.Controls.Clear();  
-            EquationsContainer.Height = 0;
-            Controls.RemoveByKey("clearBtn");
-            Controls.RemoveByKey("changeBtn");
-            Controls.RemoveByKey("exportBtn");
-            DimensionInput.Text = "";
-            comboBoxMethods.SelectedItem = null;
-            comboBoxMethods.Items.Remove("Графічний метод");
-            EnableInputs();
         }
         private void ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {

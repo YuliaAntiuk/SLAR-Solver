@@ -35,24 +35,27 @@
             this.comboBoxMethods = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.EquationsContainer = new System.Windows.Forms.Panel();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // SolveBtn
             // 
+            this.SolveBtn.BackColor = System.Drawing.SystemColors.HighlightText;
             this.SolveBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.SolveBtn.Location = new System.Drawing.Point(779, 8);
+            this.SolveBtn.Location = new System.Drawing.Point(779, 11);
             this.SolveBtn.Name = "SolveBtn";
             this.SolveBtn.Size = new System.Drawing.Size(163, 34);
             this.SolveBtn.TabIndex = 0;
             this.SolveBtn.Text = "Розв\'язати";
-            this.SolveBtn.UseVisualStyleBackColor = true;
+            this.SolveBtn.UseVisualStyleBackColor = false;
             this.SolveBtn.Click += new System.EventHandler(this.SolveBtn_Click);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.label1.Location = new System.Drawing.Point(13, 13);
+            this.label1.Location = new System.Drawing.Point(0, 15);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(342, 25);
             this.label1.TabIndex = 1;
@@ -60,7 +63,7 @@
             // 
             // DimensionInput
             // 
-            this.DimensionInput.Location = new System.Drawing.Point(399, 16);
+            this.DimensionInput.Location = new System.Drawing.Point(395, 19);
             this.DimensionInput.Name = "DimensionInput";
             this.DimensionInput.Size = new System.Drawing.Size(100, 22);
             this.DimensionInput.TabIndex = 2;
@@ -69,7 +72,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.label2.Location = new System.Drawing.Point(13, 118);
+            this.label2.Location = new System.Drawing.Point(0, 95);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(230, 25);
             this.label2.TabIndex = 3;
@@ -85,7 +88,7 @@
             "LUP-метод",
             "Метод обертання",
             "Метод квадратного кореня"});
-            this.comboBoxMethods.Location = new System.Drawing.Point(324, 65);
+            this.comboBoxMethods.Location = new System.Drawing.Point(302, 52);
             this.comboBoxMethods.Name = "comboBoxMethods";
             this.comboBoxMethods.Size = new System.Drawing.Size(268, 28);
             this.comboBoxMethods.TabIndex = 16;
@@ -95,7 +98,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.label3.Location = new System.Drawing.Point(13, 64);
+            this.label3.Location = new System.Drawing.Point(0, 55);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(271, 25);
             this.label3.TabIndex = 18;
@@ -106,10 +109,23 @@
             this.EquationsContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.EquationsContainer.Location = new System.Drawing.Point(18, 160);
+            this.EquationsContainer.Location = new System.Drawing.Point(18, 149);
             this.EquationsContainer.Name = "EquationsContainer";
-            this.EquationsContainer.Size = new System.Drawing.Size(924, 368);
+            this.EquationsContainer.Size = new System.Drawing.Size(943, 368);
             this.EquationsContainer.TabIndex = 17;
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.label1);
+            this.panel1.Controls.Add(this.SolveBtn);
+            this.panel1.Controls.Add(this.comboBoxMethods);
+            this.panel1.Controls.Add(this.label2);
+            this.panel1.Controls.Add(this.DimensionInput);
+            this.panel1.Controls.Add(this.label3);
+            this.panel1.Location = new System.Drawing.Point(18, 12);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(943, 127);
+            this.panel1.TabIndex = 19;
             // 
             // InterfaceForm
             // 
@@ -119,17 +135,13 @@
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(982, 753);
-            this.Controls.Add(this.SolveBtn);
-            this.Controls.Add(this.comboBoxMethods);
-            this.Controls.Add(this.label3);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.EquationsContainer);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.DimensionInput);
-            this.Controls.Add(this.label1);
             this.Name = "InterfaceForm";
             this.Text = "Розв\'язання СЛАР точними методами";
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -142,6 +154,7 @@
         private System.Windows.Forms.ComboBox comboBoxMethods;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Panel EquationsContainer;
+        private System.Windows.Forms.Panel panel1;
     }
 }
 
