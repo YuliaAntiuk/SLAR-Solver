@@ -111,11 +111,13 @@
             this.EquationsContainer.Size = new System.Drawing.Size(924, 368);
             this.EquationsContainer.TabIndex = 17;
             // 
-            // Form1
+            // InterfaceForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(982, 753);
             this.Controls.Add(this.SolveBtn);
             this.Controls.Add(this.comboBoxMethods);
@@ -124,7 +126,7 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.DimensionInput);
             this.Controls.Add(this.label1);
-            this.Name = "Form1";
+            this.Name = "InterfaceForm";
             this.Text = "Розв\'язання СЛАР точними методами";
             this.ResumeLayout(false);
             this.PerformLayout();

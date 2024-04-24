@@ -22,7 +22,8 @@ namespace GUI_Demo
             for (int i = 0; i < Results.Length; i++)
             {
                 Label resultLabel = new Label();
-                resultLabel.Text = $"x{i + 1} = {Results[i]}";
+                string resultsToPrint = Results[i].ToString("0.000");
+                resultLabel.Text = $"x{i + 1} = {resultsToPrint}";
                 resultLabel.AutoSize = true;
                 resultLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10f, System.Drawing.FontStyle.Regular);
 
