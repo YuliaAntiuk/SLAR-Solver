@@ -1,14 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Windows.Forms.DataVisualization.Charting;
 
 namespace GUI_Demo
 {
@@ -133,26 +123,30 @@ namespace GUI_Demo
         }
         public void CalculateRotationMethod()
         {
+            double[,] A = new double[Size, Size];
+            double[] B = new double[Size];
+            Array.Copy(Coefficients, A, Coefficients.Length);
+            Array.Copy(Constants, B, Constants.Length);
             for (int i = 0; i < Size - 1; i++)
             {
                 for (int k = i + 1; k < Size; k++)
                 {
-                    double r = Math.Sqrt(Coefficients[i, i] * Coefficients[i, i] + Coefficients[k, i] * Coefficients[k, i] * Coefficients[k, i]);
-                    double c = Coefficients[i, i] / r;
-                    double s = -Coefficients[k, i] / r;
+                    double r = Math.Sqrt(A[i, i] * A[i, i] + A[k, i] * A[k, i]);
+                    double c = A[i, i] / r;
+                    double s = -A[k, i] / r;
 
                     for (int j = 0; j < Size; j++)
                     {
-                        double tempA1 = Coefficients[i, j];
-                        double tempA2 = Coefficients[k, j];
-                        Coefficients[i, j] = c * tempA1 - s * tempA2;
-                        Coefficients[k, j] = s * tempA1 + c * tempA2;
+                        double tempA1 = A[i, j];
+                        double tempA2 = A[k, j];
+                        A[i, j] = c * tempA1 - s * tempA2;
+                        A[k, j] = s * tempA1 + c * tempA2;
                     }
 
-                    double tempB1 = Constants[i];
-                    double tempB2 = Constants[k];
-                    Constants[i] = c * tempB1 - s * tempB2;
-                    Constants[k] = s * tempB1 + c * tempB2;
+                    double tempB1 = B[i];
+                    double tempB2 = B[k];
+                    B[i] = c * tempB1 - s * tempB2;
+                    B[k] = s * tempB1 + c * tempB2;
                 }
             }
 
@@ -161,9 +155,9 @@ namespace GUI_Demo
                 double sum = 0;
                 for (int j = i + 1; j < Size; j++)
                 {
-                    sum += Coefficients[i, j] * Result[j];
+                    sum += A[i, j] * Result[j];
                 }
-                Result[i] = (Constants[i] - sum) / Coefficients[i, i];
+                Result[i] = (B[i] - sum) / A[i, i];
             }
         }
         public void CalculateLUPMethod()

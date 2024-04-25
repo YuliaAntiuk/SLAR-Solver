@@ -1,14 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Text.RegularExpressions;
 
 namespace GUI_Demo
 {
@@ -29,6 +22,8 @@ namespace GUI_Demo
         private void DisplayEquations(int dimension)
         {
             EquationsContainer.Controls.Clear();
+            coefficientTextBoxes.Clear();
+            constantTextBoxes.Clear();
             SolveBtn.Enabled = false;
             const int textBoxWidth = 50;
             const int textBoxSpacing = 5;
@@ -235,6 +230,7 @@ namespace GUI_Demo
             Controls.RemoveByKey("changeBtn");
             Controls.RemoveByKey("exportBtn");
             Controls.RemoveByKey("complexityBtn");
+            controlbuttons.Clear();
         }
         private void ChangeBtn_Click(object sender, EventArgs e)
         {
