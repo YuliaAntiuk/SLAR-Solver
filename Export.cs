@@ -15,27 +15,28 @@ namespace GUI_Demo
         public Export (Equation equation)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("Матриця коефіцієнтів\t\tВектор невідомих\tВектор вільних членів");
+            sb.AppendLine("Матриця коефіцієнтів:");
             sb.AppendLine("[");
             for (int i = 0; i < equation.Size; i++)
             {
                 sb.Append("[");
                 for (int j = 0; j < equation.Size; j++)
                 {
-                    sb.Append($"{equation.Coefficients[i, j], -8:F6}");
+                    sb.Append(equation.Coefficients[i, j]);
                     if (j < equation.Size - 1)
                         sb.Append(", ");
                 }
-                sb.Append("]");
-                sb.Append("\t\t[");
-                sb.Append($"x{i+1}");
-                sb.Append("]");
-                sb.Append("\t\t[");
-                sb.Append($"{equation.Constants[i], -8:F6}");
                 sb.AppendLine("]");
             }
+            sb.AppendLine("]\nВектор вільних членів:");
+            sb.Append("[");
+            for (int i = 0; i < equation.Size; i++)
+            {
+                sb.Append(equation.Constants[i]);
+                if (i < equation.Size - 1)
+                    sb.Append(", ");
+            }
             sb.AppendLine("]");
-
             sb.Append("Розв'язок: [");
             for (int i = 0; i < equation.Size; i++)
             {
