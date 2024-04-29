@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Forms;
 
 namespace GUI_Demo
 {
@@ -88,6 +89,10 @@ namespace GUI_Demo
                         {
                             sum += S[i, k] * S[j, k];
                         }
+                        if (Math.Abs(S[j, j]) < double.Epsilon)
+                        {
+                            throw new InvalidOperationException("Ділення на число, близьке за модулем до 0.");
+                        }
                         S[i, j] = (Coefficients[i, j] - sum) / S[j, j];
                     }
                     else 
@@ -132,6 +137,10 @@ namespace GUI_Demo
                 for (int k = i + 1; k < Size; k++)
                 {
                     double r = Math.Sqrt(A[i, i] * A[i, i] + A[k, i] * A[k, i]);
+                    if(Math.Abs(r) < double.Epsilon)
+                    {
+                        throw new InvalidOperationException("Ділення на число, близьке за модулем до 0.");
+                    }
                     double c = A[i, i] / r;
                     double s = -A[k, i] / r;
 
@@ -152,6 +161,10 @@ namespace GUI_Demo
 
             for (int i = Size - 1; i >= 0; i--)
             {
+                if (Math.Abs(A[i,i]) < double.Epsilon)
+                {
+                    throw new InvalidOperationException("Ділення на число, близьке за модулем до 0.");
+                }
                 double sum = 0;
                 for (int j = i + 1; j < Size; j++)
                 {
@@ -215,6 +228,10 @@ namespace GUI_Demo
 
                 for (int i = k + 1; i < Size; i++)
                 {
+                    if (Math.Abs(U[k,k]) < double.Epsilon)
+                    {
+                        throw new InvalidOperationException("Ділення на число, близьке за модулем до 0.");
+                    }
                     L[i, k] = U[i, k] / U[k, k];
                     for (int j = k; j < Size; j++)
                     {

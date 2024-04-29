@@ -184,30 +184,36 @@ namespace GUI_Demo
                 MessageBox.Show("Система має нуль або безліч розв'язків", "Нульовий визначник", MessageBoxButtons.OK, MessageBoxIcon.Error );
             } else
             {
-                switch (selectedMethod)
+                try
                 {
-                    case "Метод квадратного кореня":
-                        if (equation.CalculateDeterminant(equation.Coefficients) < 0 || !Validation.IsSymetrical(equation))
-                        {
-                            MessageBox.Show("Матриця коефіцієнтів несиметрична або має від'ємний визначник", "Систему неможливо розв'язати даним методом", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
-                        } else
-                        {
-                            equation.CalculateSqrtMethod();
-                        }
-                        break;
-                    case "Метод обертання":
-                        equation.CalculateRotationMethod();
-                        break;
-                    case "LUP-метод":
-                        equation.CalculateLUPMethod();
-                        break;
-                    case "Графічний метод":
-                        GraphicSolver graphicSolver = new GraphicSolver(equation);
-                        graphicSolver.SolveGraphical();
-                        break;
-                    default:
-                        break;
+                    switch (selectedMethod)
+                    {
+                        case "Метод квадратного кореня":
+                            if (equation.CalculateDeterminant(equation.Coefficients) < 0 || !Validation.IsSymetrical(equation))
+                            {
+                                MessageBox.Show("Матриця коефіцієнтів несиметрична або має від'ємний визначник", "Систему неможливо розв'язати даним методом", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
+                            }
+                            else
+                            {
+                                equation.CalculateSqrtMethod();
+                            }
+                            break;
+                        case "Метод обертання":
+                            equation.CalculateRotationMethod();
+                            break;
+                        case "LUP-метод":
+                            equation.CalculateLUPMethod();
+                            break;
+                        case "Графічний метод":
+                            GraphicSolver graphicSolver = new GraphicSolver(equation);
+                            graphicSolver.SolveGraphical();
+                            break;
+                        default:
+                            break;
+                    }
+                } catch (Exception ex) {
+                    MessageBox.Show(ex.Message, "Помилка в обчисленнях", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 OutputResults(equation.Result);
             }
