@@ -176,7 +176,10 @@ namespace GUI_Demo
             int dimension = Convert.ToInt32(DimensionInput.Text);
             ReadEquationsValues(dimension);
             string selectedMethod = comboBoxMethods.SelectedItem.ToString();
-            if (!Validation.IsSolvable(equation))
+            if (!Validation.IsEquationValid(equation))
+            {
+                MessageBox.Show("Коефіцієнти виходять за межі обмежень", "Невалідні коефіцієнти", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            } else if (!Validation.IsSolvable(equation))
             {
                 MessageBox.Show("Система має нуль або безліч розв'язків", "Нульовий визначник", MessageBoxButtons.OK, MessageBoxIcon.Error );
             } else

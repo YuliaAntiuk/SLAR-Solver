@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 using System.Windows.Forms;
-
+using System;
 namespace GUI_Demo
 {
-    public static class Validation
+    public class Validation
     {
+        private static double maxRestriction = 1e10;
+        private static double minRestriction = 1e-10;
         public static bool IsDimensionEntered(TextBox DimensionInput)
         {
             if (int.TryParse(DimensionInput.Text, out int dimension))
@@ -38,11 +34,30 @@ namespace GUI_Demo
         {
             TextBox textBox = sender as TextBox;
             string text = textBox.Text;
-            if (!Regex.IsMatch(text, @"^[0-9.-]*$"))
+            if (!Regex.IsMatch(text, @"^$|^[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$"))
             {
                 MessageBox.Show("Введено некоретктні символи!", "Помилка вводу", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 e.Cancel = true;
             }
+            //Later add the maximum number of characters
+        }
+        public static bool IsEquationValid(Equation equation)
+        {
+            for(int i = 0; i<equation.Size; i++)
+            {
+                for(int j = 0; j<equation.Size; j++)
+                {
+                    if (Math.Abs(equation.Coefficients[i, j]) > maxRestriction || Math.Abs(equation.Coefficients[i, j]) < minRestriction)
+                    {
+                        return false;
+                    }
+                }
+                if(Math.Abs(equation.Constants[i]) > maxRestriction || Math.Abs(equation.Constants[i]) < minRestriction)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
         public static bool IsSolvable(Equation equation)
         {
