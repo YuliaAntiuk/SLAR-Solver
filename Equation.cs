@@ -259,53 +259,5 @@ namespace GUI_Demo
                 Result[i] /= U[i, i];
             }
         }
-        /*public void SolveGraphical()
-        {
-            List<double> result = new List<double>();
-
-            Form graphicalForm = new Form();
-            graphicalForm.Text = "Графік рівнянь";
-            graphicalForm.Size = new System.Drawing.Size(600, 400);
-
-            Chart chart = new Chart();
-            chart.Parent = graphicalForm;
-            chart.Dock = DockStyle.Fill;
-            ChartArea plot = new ChartArea("Equations plot");
-            chart.ChartAreas.Add(plot);
-            plot.AxisX.Minimum = double.NaN;  
-            plot.AxisX.Maximum = double.NaN;
-            plot.AxisY.Minimum = double.NaN;
-            plot.AxisY.Maximum = double.NaN;
-
-            Series series1 = new Series();
-            series1.ChartType = SeriesChartType.Line;
-            series1.Color = Color.Blue;
-            series1.BorderWidth = 3;
-
-            Series series2 = new Series();
-            series2.ChartType = SeriesChartType.Line;
-            series2.Color = Color.Red;
-            series2.BorderWidth = 3;
-
-            for (double x = -10; x <= 10; x += 0.1)
-            {
-                double y1 = (Constants[0] - Coefficients[0, 0] * x) / Coefficients[0, 1];
-                series1.Points.AddXY(x, y1);
-
-                double y2 = (Constants[1] - Coefficients[1, 0] * x) / Coefficients[1, 1];
-                series2.Points.AddXY(x, y2);
-
-                if (Math.Abs(y1 - y2) < 0.001)
-                {
-                    result.Add(x);
-                    result.Add(y1);
-                }
-            }
-
-            chart.Series.Add(series1);
-            chart.Series.Add(series2);
-            graphicalForm.ShowDialog();
-            Result = result.ToArray();
-        }*/
     }
 }

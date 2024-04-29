@@ -34,8 +34,6 @@ namespace GUI_Demo
         }
         public void SolveGraphical()
         {
-            List<double> result = new List<double>();
-
             using (Form graphicalForm = new Form())
             {
                 graphicalForm.Text = "Графіки рівнянь";
@@ -63,19 +61,13 @@ namespace GUI_Demo
 
                     double y2 = (equation.Constants[1] - equation.Coefficients[1, 0] * x) / equation.Coefficients[1, 1];
                     series2.Points.AddXY(x, y2);
-
-                    if (Math.Abs(y1 - y2) < 0.001)
-                    {
-                        result.Add(x);
-                        result.Add(y1);
-                    }
+                    CalculateIntersectionPoints();
                 }
 
                 chart.Series.Add(series1);
                 chart.Series.Add(series2);
 
                 graphicalForm.ShowDialog();
-                equation.Result = result.ToArray();
             }
         }
         private Series CreateSeries(int index)
@@ -85,6 +77,11 @@ namespace GUI_Demo
             series.Color = (index == 0) ? Color.Blue : Color.Red;
             series.BorderWidth = 3;
             return series;
+        }
+        private void CalculateIntersectionPoints()
+        {
+            equation.Result[0] = (equation.Coefficients[1, 1] * equation.Constants[0] - equation.Coefficients[0, 1] * equation.Constants[1])/equation.CalculateDeterminant(equation.Coefficients);
+            equation.Result[1] = (equation.Coefficients[0, 0] * equation.Constants[1] - equation.Coefficients[1, 0] * equation.Constants[0]) / equation.CalculateDeterminant(equation.Coefficients);
         }
     }
 }
