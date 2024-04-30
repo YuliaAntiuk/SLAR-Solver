@@ -296,6 +296,8 @@ namespace GUI_Demo
 
             Series series1 = CreateSeries(0);
             Series series2 = CreateSeries(1);
+            series1.Name = "Рівняння 1";
+            series2.Name = "Рівняння 2";
             double max = FindMaximum() * 5;
             double startX = (max > 0) ? (-max) : max;
             double endX = Math.Abs(max);
@@ -306,12 +308,14 @@ namespace GUI_Demo
 
                 double y2 = (Constants[1] - Coefficients[1, 0] * x) / Coefficients[1, 1];
                 series2.Points.AddXY(x, y2);
-                CalculateIntersectionPoints();
             }
-
             chart.Series.Add(series1);
             chart.Series.Add(series2);
+            chart.Legends.Add(new Legend("Legend"));
+            chart.Series["Рівняння 1"].Legend = "Legend";
+            chart.Series["Рівняння 2"].Legend = "Legend";
 
+            CalculateIntersectionPoints();
             graphicalForm.Show();
             graphicalForm.FormClosed += (sender, e) =>
             {

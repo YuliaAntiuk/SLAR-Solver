@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace GUI_Demo
 {
-    public interface GraphicSolver //composition with Equation
+    public interface GraphicSolver 
     {
         double FindMaximum();
         void CreateGraphic(Form graphicalForm);
