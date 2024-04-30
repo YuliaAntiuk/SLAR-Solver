@@ -11,6 +11,7 @@ namespace GUI_Demo
         private readonly List<TextBox> constantTextBoxes = new List<TextBox>();
         private Equation equation;
         private List<Button> controlbuttons = new List<Button>();
+        private Form graphicalForm = new Form();
         public InterfaceForm()
         {
             InitializeComponent();
@@ -206,8 +207,11 @@ namespace GUI_Demo
                             equation.CalculateLUPMethod();
                             break;
                         case "Графічний метод":
-                            GraphicSolver graphicSolver = new GraphicSolver(equation);
-                            graphicSolver.SolveGraphical();
+                            if (graphicalForm == null || graphicalForm.IsDisposed)
+                            {
+                                graphicalForm = new Form();
+                            }
+                            equation.CreateGraphic(graphicalForm);
                             break;
                         default:
                             break;
@@ -234,6 +238,7 @@ namespace GUI_Demo
         }
         private void RemoveBtns()
         {
+            graphicalForm.Dispose();
             Controls.RemoveByKey("resultPanel");
             Controls.RemoveByKey("clearBtn");
             Controls.RemoveByKey("changeBtn");

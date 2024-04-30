@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace GUI_Demo
 {
-    public class Equation
+    public class Equation:GraphicSolver
     {
         public double[,] Coefficients { get; set; }
         public double[] Constants { get; set; }
@@ -259,5 +262,75 @@ namespace GUI_Demo
                 Result[i] /= U[i, i];
             }
         }
+        public double FindMaximum()
+        {
+            int arrSize = Size * 3;
+            double[] arr = new double[arrSize];
+            int k = 0;
+            for (int i = 0; i < Size; i++)
+            {
+                for (int j = 0; j < Size; j++)
+                {
+                    arr[k] = Coefficients[i, j];
+                    k++;
+                }
+                arr[k] = Constants[i];
+                k++;
+            }
+            return arr.Max();
+        }
+        public void CreateGraphic(Form graphicalForm)
+        {
+            graphicalForm.Text = "Графіки рівнянь";
+            graphicalForm.Size = new System.Drawing.Size(600, 400);
+
+            Chart chart = new Chart();
+            chart.Parent = graphicalForm;
+            chart.Dock = DockStyle.Fill;
+            ChartArea plot = new ChartArea("Графічний метод");
+            chart.ChartAreas.Add(plot);
+            plot.AxisX.Minimum = double.NaN;
+            plot.AxisX.Maximum = double.NaN;
+            plot.AxisY.Minimum = double.NaN;
+            plot.AxisY.Maximum = double.NaN;
+
+            Series series1 = CreateSeries(0);
+            Series series2 = CreateSeries(1);
+            double max = FindMaximum() * 5;
+            double startX = (max > 0) ? (-max) : max;
+            double endX = Math.Abs(max);
+            for (double x = startX; x <= endX; x += 0.1)
+            {
+                double y1 = (Constants[0] - Coefficients[0, 0] * x) / Coefficients[0, 1];
+                series1.Points.AddXY(x, y1);
+
+                double y2 = (Constants[1] - Coefficients[1, 0] * x) / Coefficients[1, 1];
+                series2.Points.AddXY(x, y2);
+                CalculateIntersectionPoints();
+            }
+
+            chart.Series.Add(series1);
+            chart.Series.Add(series2);
+
+            graphicalForm.Show();
+            graphicalForm.FormClosed += (sender, e) =>
+            {
+                graphicalForm.Dispose();
+            };
+        }
+        public Series CreateSeries(int index)
+        {
+            Series series = new Series();
+            series.ChartType = SeriesChartType.Line;
+            series.Color = (index == 0) ? Color.Blue : Color.Red;
+            series.BorderWidth = 3;
+            return series;
+        }
+        public void CalculateIntersectionPoints()
+        {
+            Result[0] = (Coefficients[1, 1] * Constants[0] - Coefficients[0, 1] * Constants[1]) / CalculateDeterminant(Coefficients);
+            Result[1] = (Coefficients[0, 0] * Constants[1] - Coefficients[1, 0] * Constants[0]) / CalculateDeterminant(Coefficients);
+        }
+
     }
 }
