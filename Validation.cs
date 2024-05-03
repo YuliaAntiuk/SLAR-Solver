@@ -47,12 +47,12 @@ namespace GUI_Demo
             {
                 for(int j = 0; j<equation.Size; j++)
                 {
-                    if (Math.Abs(equation.Coefficients[i, j]) > maxRestriction || Math.Abs(equation.Coefficients[i, j]) < minRestriction)
+                    if ((Math.Abs(equation.Coefficients[i, j]) > maxRestriction || Math.Abs(equation.Coefficients[i, j]) < minRestriction) && equation.Coefficients[i,j] != 0)
                     {
                         return false;
                     }
                 }
-                if(Math.Abs(equation.Constants[i]) > maxRestriction || Math.Abs(equation.Constants[i]) < minRestriction)
+                if((Math.Abs(equation.Constants[i]) > maxRestriction || Math.Abs(equation.Constants[i]) < minRestriction) && equation.Constants[i] != 0)
                 {
                     return false;
                 }

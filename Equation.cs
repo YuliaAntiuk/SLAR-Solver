@@ -279,6 +279,25 @@ namespace GUI_Demo
             }
             return arr.Max();
         }
+        private double[] FindMinMaxY(Series series)
+        {
+            double minY = double.PositiveInfinity; 
+            double maxY = double.NegativeInfinity; 
+
+            foreach (DataPoint point in series.Points)
+            {
+                double yValue = point.YValues[0]; 
+                if (yValue < minY)
+                {
+                    minY = yValue;
+                }
+                if (yValue > maxY)
+                {
+                    maxY = yValue; 
+                }
+            }
+            return new double[] { minY, maxY };
+        }
         public void CreateGraphic(Form graphicalForm)
         {
             graphicalForm.Text = "Графіки рівнянь";
@@ -298,16 +317,39 @@ namespace GUI_Demo
             Series series2 = CreateSeries(1);
             series1.Name = "Рівняння 1";
             series2.Name = "Рівняння 2";
-            double max = FindMaximum() * 5;
+            double max = FindMaximum();
             double startX = (max > 0) ? (-max) : max;
             double endX = Math.Abs(max);
-            for (double x = startX; x <= endX; x += 0.1)
+            if (Coefficients[0,1] == 0) 
             {
-                double y1 = (Constants[0] - Coefficients[0, 0] * x) / Coefficients[0, 1];
-                series1.Points.AddXY(x, y1);
+                for (double x = startX; x <= endX; x += 0.1)
+                {
+                    double y2 = CalculateY(Coefficients[1, 0], Coefficients[1, 1], Constants[1], x);
+                    series2.Points.AddXY(x, y2);
+                }
+                double straightX = Constants[0] / Coefficients[0, 0];
+                series1.Points.AddXY(straightX, FindMinMaxY(series2)[0]);
+                series1.Points.AddXY(straightX, FindMinMaxY(series2)[1]);
+            } else if (Coefficients[1,1] == 0)
+            {
+                for (double x = startX; x <= endX; x += 0.1)
+                {
+                    double y1 = CalculateY(Coefficients[0, 0], Coefficients[0, 1], Constants[0], x);
+                    series1.Points.AddXY(x, y1);
+                }
+                double straightX = Constants[1] / Coefficients[1, 0];
+                series2.Points.AddXY(straightX, FindMinMaxY(series1)[0]);  
+                series2.Points.AddXY(straightX, FindMinMaxY(series1)[1]);
+            } else
+            {
+                for (double x = startX; x <= endX; x += 0.1)
+                {
+                    double y1 = CalculateY(Coefficients[0, 0], Coefficients[0, 1], Constants[0], x);
+                    series1.Points.AddXY(x, y1);
 
-                double y2 = (Constants[1] - Coefficients[1, 0] * x) / Coefficients[1, 1];
-                series2.Points.AddXY(x, y2);
+                    double y2 = CalculateY(Coefficients[1, 0], Coefficients[1, 1], Constants[1], x);
+                    series2.Points.AddXY(x, y2);
+                }
             }
             chart.Series.Add(series1);
             chart.Series.Add(series2);
@@ -334,6 +376,17 @@ namespace GUI_Demo
         {
             Result[0] = (Coefficients[1, 1] * Constants[0] - Coefficients[0, 1] * Constants[1]) / CalculateDeterminant(Coefficients);
             Result[1] = (Coefficients[0, 0] * Constants[1] - Coefficients[1, 0] * Constants[0]) / CalculateDeterminant(Coefficients);
+        }
+        private double CalculateY(double a1, double a2, double b, double x)
+        {
+            if (a2 != 0)
+            {
+                return (b - a1 * x) / a2;
+            }
+            else
+            {
+                return b / a1;
+            }
         }
 
     }
