@@ -162,7 +162,14 @@ namespace GUI_Demo
             string[] textxsForBtn = { "Очистити", "Змінити метод", "Експорт", "Складність" };
             string[] btnNames = { "clearBtn", "changeBtn", "exportBtn", "complexityBtn" };
             EventHandler[] eventHandlers = { ClearBtn_Click, ChangeBtn_Click, ExportBtn_Click, ComplexityBtn_Click };
-            for (int i = 0; i < textxsForBtn.Length; i++)
+            int buttonNumber = 0;
+            if (comboBoxMethods.SelectedItem == "Графічний метод") {
+                buttonNumber = btnNames.Length - 1;
+            } else
+            {
+                buttonNumber = btnNames.Length;
+            }
+            for (int i = 0; i < buttonNumber; i++)
             {
                 CreateBtn(x, y, textxsForBtn[i], btnNames[i], eventHandlers[i]);
                 x = controlbuttons[i].Right + 30;
@@ -244,6 +251,7 @@ namespace GUI_Demo
             Controls.RemoveByKey("changeBtn");
             Controls.RemoveByKey("exportBtn");
             Controls.RemoveByKey("complexityBtn");
+            Controls.RemoveByKey("complexityLabel");
             controlbuttons.Clear();
         }
         private void ChangeBtn_Click(object sender, EventArgs e)
@@ -269,7 +277,13 @@ namespace GUI_Demo
         }
         private void ComplexityBtn_Click(object sender, EventArgs e)
         {
-
+            Label complexityLabel = new Label();
+            complexityLabel.Text = $"Практична складність - {equation.IterationCounter}";
+            complexityLabel.AutoSize = true;
+            complexityLabel.Name = "complexityLabel";
+            complexityLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10f, System.Drawing.FontStyle.Regular);
+            complexityLabel.Location = new System.Drawing.Point(18, controlbuttons[0].Bottom + 15);
+            this.Controls.Add(complexityLabel);
         }
         private void DisableInputs()
         {

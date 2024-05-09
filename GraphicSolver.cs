@@ -14,6 +14,7 @@ namespace GUI_Demo
         double FindMaximum();
         void CreateGraphic(Form graphicalForm);
         Series CreateSeries(int index);
+        double[] FindMinMaxY(Series series);
         void CalculateIntersectionPoints();
     }
 }
