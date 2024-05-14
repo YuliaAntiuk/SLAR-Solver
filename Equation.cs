@@ -342,11 +342,58 @@ namespace GUI_Demo
             plot.AxisX.Maximum = double.NaN;
             plot.AxisY.Minimum = double.NaN;
             plot.AxisY.Maximum = double.NaN;
+            plot.AxisX.IsStartedFromZero = false;
+            plot.AxisY.IsStartedFromZero = false;
 
             Series series1 = CreateSeries(0);
             Series series2 = CreateSeries(1);
             series1.Name = "Рівняння 1";
             series2.Name = "Рівняння 2";
+
+            chart.MouseWheel += (sender, e) =>
+            {
+                try
+                {
+                    double xMin = chart.ChartAreas[0].AxisX.ScaleView.ViewMinimum;
+                    double xMax = chart.ChartAreas[0].AxisX.ScaleView.ViewMaximum;
+                    double yMin = chart.ChartAreas[0].AxisY.ScaleView.ViewMinimum;
+                    double yMax = chart.ChartAreas[0].AxisY.ScaleView.ViewMaximum;
+                    double posXStart = xMin;
+                    double posXFinish = xMax;
+                    double posYStart = yMin;
+                    double posYFinish = yMax;
+
+                    if (e.Delta > 0)
+                    {
+                        // Збільшення масштабу
+                        double xRange = xMax - xMin;
+                        double yRange = yMax - yMin;
+
+                        posXStart = xMin - xRange * 0.25;
+                        posXFinish = xMax + xRange * 0.25;
+                        posYStart = yMin - yRange * 0.25;
+                        posYFinish = yMax + yRange * 0.25;
+                    }
+                    else if (e.Delta < 0)
+                    {
+                        // Зменшення масштабу
+                        double xRange = xMax - xMin;
+                        double yRange = yMax - yMin;
+
+                        posXStart = xMin + xRange * 0.25;
+                        posXFinish = xMax - xRange * 0.25;
+                        posYStart = yMin + yRange * 0.25;
+                        posYFinish = yMax - yRange * 0.25;
+                    }
+
+                    chart.ChartAreas[0].AxisX.ScaleView.Zoom(posXStart, posXFinish);
+                    chart.ChartAreas[0].AxisY.ScaleView.Zoom(posYStart, posYFinish);
+                }
+                catch { }
+            };
+
+
+
             double max = FindMaximum();
             double startX = (max > 0) ? (-max) : max;
             double endX = Math.Abs(max);
@@ -418,6 +465,5 @@ namespace GUI_Demo
                 return b / a1;
             }
         }
-
     }
 }
